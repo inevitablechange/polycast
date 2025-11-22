@@ -1,0 +1,30 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "baseBuilder": {
+    "ownerAddress": "0x8eebd42e9b7eb0b29a3757c637bf8feb328b3f8a"
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "PolyCast",
+    "homeUrl": "https://polycast-five.vercel.app/",
+    "iconUrl": "https://polycast-five.vercel.app/icon.png",
+    "splashImageUrl": "https://polycast-five.vercel.app/splash.png",
+    "splashBackgroundColor": "#0F172A",
+    "webhookUrl": "https://polycast-five.vercel.app/api/webhook",
+    "subtitle": "One Cast, Many Languages",
+    "description": "Write once, cast in many languages on Farcaster.",
+    "screenshotUrls": ["https://polycast-five.vercel.app/screenshots/s1.png"],
+    "primaryCategory": "social",
+    "tags": ["polycast", "miniapp", "base"],
+    "heroImageUrl": "https://polycast-five.vercel.app/og.png",
+    "tagline": "One Cast, Many Languages",
+    "ogTitle": "PolyCast",
+    "ogDescription": "Global Farcaster casting mini app.",
+    "ogImageUrl": "https://polycast-five.vercel.app/og.png",
+    "noindex": true
+  }
+}
