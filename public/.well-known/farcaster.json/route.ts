@@ -13,25 +13,25 @@ export async function GET() {
     miniapp: {
       version: '1',
       name: 'PolyCast',
-      homeUrl: 'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/',
-      iconUrl: 'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/icon.png',
-      splashImageUrl: 'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/splash.png',
+      homeUrl: 'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/',
+      iconUrl: 'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/icon.png',
+      splashImageUrl: 'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/splash.png',
       splashBackgroundColor: '#0F172A', // 네이비 같은 거
-      webhookUrl: 'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/api/webhook', // 없으면 나중에 null 처리해도 됨
+      webhookUrl: 'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/api/webhook', // 없으면 나중에 null 처리해도 됨
       subtitle: 'One Cast, Many Languages',
       description:
         'Write once, cast to the world. Translate your Farcaster posts into many languages in one click.',
       screenshotUrls: [
-        'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/screenshots/s1.png',
-        'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/screenshots/s2.png',
+        'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/screenshots/s1.png',
+        'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/screenshots/s2.png',
       ],
       primaryCategory: 'social',
       tags: ['polycast', 'miniapp', 'translation', 'base'],
-      heroImageUrl: 'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/og.png',
+      heroImageUrl: 'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/og.png',
       tagline: 'One Cast, Many Languages',
       ogTitle: 'PolyCast – Global Farcaster Casting',
       ogDescription: 'Translate and cast in many languages with one click.',
-      ogImageUrl: 'https://polycast-g91ht42wl-yhhs-projects-36cbd044.vercel.app/og.png',
+      ogImageUrl: 'https://polycast-ehbdes803-yhhs-projects-36cbd044.vercel.app/og.png',
       noindex: true,
     },
   })
