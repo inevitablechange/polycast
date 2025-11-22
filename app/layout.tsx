@@ -11,14 +11,14 @@ export const metadata: Metadata = {
   other: {
     'fc:miniapp': JSON.stringify({
       version: 'next',
-      imageUrl: 'https://your-domain.com/embed-preview.png',
+      imageUrl: 'https://polycast-five.vercel.app/Polycast_logo2.png',
       button: {
         title: 'Cast Globally',
         action: {
           type: 'launch_frame',
-          url: 'https://your-domain.com',
+          url: 'https://polycast-five.vercel.app',
           name: 'PolyCast',
-          splashImageUrl: 'https://your-domain.com/splash.png',
+          splashImageUrl: 'https://polycast-five.vercel.app/Polycast_logo1.png',
           splashBackgroundColor: '#6366F1',
         },
       },
