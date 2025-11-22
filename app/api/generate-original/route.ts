@@ -17,11 +17,23 @@ export async function POST(request: NextRequest) {
         'x-litellm-api-key': process.env.FLOCK_API_KEY || '',
       },
       body: JSON.stringify({
-        model: 'qwen3-30b-a3b-instruct-2507',
+        model: 'qwen3-235b-a22b-thinking-2507',
         messages: [
           {
             role: 'system',
-            content: `You are a professional social media content creator. Generate a well-structured, informative Farcaster cast with a compelling opening sentence. The first 320 characters will appear in the feed preview, so make them count. Topic: ${topic}`,
+            content: `You are a professional social media content creator for Farcaster.
+
+Generate a single, well-structured cast as plain text only.
+
+Hard rules:
+- Do NOT include any labels or headings like "CAST", "CAST (Farcaster):" or similar.
+- Do NOT use markdown formatting (no **bold**, lists, or numbered sections).
+- Do NOT use emojis.
+- Output only the cast body text, nothing else.
+
+The first 320 characters will appear in the feed preview, so make the opening sentence strong and self-contained.
+
+Topic: ${topic}`,
           },
         ],
         max_tokens: 200,
@@ -34,7 +46,11 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json()
-    const originalText = data.content?.[0]?.text || ''
+    // 서버 터미널에 Flock 원본 응답 전체 로깅
+    console.log('Flock generate-original raw response:', JSON.stringify(data, null, 2))
+
+    // Flock 응답 구조에 맞춰 choices[0].message.content 에서 텍스트 추출
+    const originalText = (data.choices?.[0]?.message?.content as string | undefined) || ''
 
     return NextResponse.json({
       originalText,
