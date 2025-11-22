@@ -4,13 +4,10 @@
     "payload": "",
     "signature": ""
   },
-  "baseBuilder": {
-    "ownerAddress": "0x88bFe3C3A99072c497B6058F660E24E3bC2922be"
-  },
   "miniapp": {
     "version": "1",
     "name": "PolyCast",
-    "homeUrl": "https://polycast-five.vercel.app/",
+    "homeUrl": "https://polycast-five.vercel.app",
     "iconUrl": "https://polycast-five.vercel.app/icon.png",
     "splashImageUrl": "https://polycast-five.vercel.app/splash.png",
     "splashBackgroundColor": "#0F172A",
@@ -26,5 +23,8 @@
     "ogDescription": "Global Farcaster casting mini app.",
     "ogImageUrl": "https://polycast-five.vercel.app/og.png",
     "noindex": true
+  },
+  "baseBuilder": {
+    "ownerAddress": "0x88bFe3C3A99072c497B6058F660E24E3bC2922be"
   }
 }
