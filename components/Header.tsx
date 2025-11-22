@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import { sdk } from '@farcaster/miniapp-sdk'
-import { Globe, ChevronDown, Check, Menu, X } from 'lucide-react'
+import { ChevronDown, Check, Menu, X } from 'lucide-react'
 import { LANGUAGES, UILanguage } from '@/lib/types'
 import { getTranslation } from '@/lib/i18n'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useUiLanguage } from './UiLanguageProvider'
 
 const UI_LANGUAGES: UILanguage[] = [
   'en',
@@ -24,24 +25,20 @@ const UI_LANGUAGES: UILanguage[] = [
   'hi',
 ]
 
-interface HeaderProps {
-  uiLanguage: UILanguage
-  onLanguageChange: (lang: UILanguage) => void
-}
-
-export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
+export default function Header() {
+  const { uiLanguage, setUiLanguage } = useUiLanguage()
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false)
   const pathname = usePathname()
+  const t = getTranslation(uiLanguage)
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-3xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-            <h1 className="text-lg sm:text-xl font-semibold text-gray-900">PolyCast</h1>
+            <img src="/Polycast_logo1.png" alt="PolyCast Logo" className="w-36 h-14" />
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-4">
@@ -53,7 +50,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                   pathname === '/' ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Create
+                {t.createNav}
               </Link>
               <Link
                 href="/leaderboard"
@@ -63,7 +60,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Leaderboard
+                {t.leaderboardTitle}
               </Link>
               <Link
                 href="/profile"
@@ -71,7 +68,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                   pathname === '/profile' ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Profile
+                {t.profileTitle}
               </Link>
               <Link
                 href="/settings"
@@ -79,7 +76,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                   pathname === '/settings' ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Settings
+                {t.settingsTitle}
               </Link>
             </nav>
 
@@ -110,7 +107,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                       <button
                         key={lang}
                         onClick={() => {
-                          onLanguageChange(lang)
+                          setUiLanguage(lang)
                           setIsLanguageMenuOpen(false)
                         }}
                         className={`w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
@@ -127,7 +124,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
               )}
             </div>
 
-            {/* Profile Avatar */}
+            {/* Profile Avatar / Wallet Modal */}
             <div className="relative">
               <button
                 onClick={() => setIsWalletModalOpen((v) => !v)}
@@ -137,7 +134,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                 <img
                   src="https://ui-avatars.com/api/?name=U&background=F3F4F6&color=111827"
                   alt="Profile"
-                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-gray-200"
+                  className="rounded-full border border-gray-200 justify-center items-center w-10 "
                 />
               </button>
               {isWalletModalOpen && (
@@ -146,11 +143,11 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl border border-gray-100 shadow-lg z-20 p-3">
                     <div className="text-sm">
                       <div className="flex items-center justify-between py-1.5">
-                        <span className="text-gray-500">Address</span>
+                        <span className="text-gray-500">{t.walletAddressLabel}</span>
                         <span className="font-medium break-all">-</span>
                       </div>
                       <div className="flex items-center justify-between py-1.5">
-                        <span className="text-gray-500">Network</span>
+                        <span className="text-gray-500">{t.walletNetworkLabel}</span>
                         <span className="font-medium">-</span>
                       </div>
                     </div>
@@ -159,7 +156,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                         onClick={() => setIsWalletModalOpen(false)}
                         className="px-3 py-1.5 text-xs rounded-md bg-purple-600 text-white hover:bg-purple-700"
                       >
-                        Close
+                        {t.walletModalClose}
                       </button>
                     </div>
                   </div>
@@ -190,7 +187,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                Create
+                {t.createNav}
               </Link>
               <Link
                 href="/leaderboard"
@@ -201,7 +198,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                Leaderboard
+                {t.leaderboardTitle}
               </Link>
               <Link
                 href="/profile"
@@ -212,7 +209,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                Profile
+                {t.profileTitle}
               </Link>
               <Link
                 href="/settings"
@@ -223,7 +220,7 @@ export default function Header({ uiLanguage, onLanguageChange }: HeaderProps) {
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                Settings
+                {t.settingsTitle}
               </Link>
             </div>
           </nav>
