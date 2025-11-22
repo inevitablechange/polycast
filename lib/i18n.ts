@@ -1,5 +1,8 @@
 import { UILanguage, Language } from './types'
 
+/**
+ * UI 텍스트 번역 데이터
+ */
 export const translations: Record<
   UILanguage,
   {
@@ -36,8 +39,45 @@ export const translations: Record<
     previewProfessional: string
     previewCasual: string
     previewCrypto: string
+    leaderboardTitle: string
+    totalCasts: string
+    activeCreators: string
+    fullRankings: string
+    casts: string
+    languages: string
+    langsShort: string
+    goldMedal: string
+    silverMedal: string
+    bronzeMedal: string
+    profileTitle: string
+    globalStats: string
+    recentActivities: string
+    noActivities: string
+    viewCast: string
+    settingsTitle: string
+    aboutTitle: string
+    viewDocs: string
+    feedbackTitle: string
+    feedbackDescription: string
+    submitFeedback: string
+    accountTitle: string
+    viewMyProfile: string
+    totalTranslationsLabel: string
+    imagesPostedLabel: string
+    languagesUsedLabel: string
+    postedLabel: string
+    aboutDescription: string
+
+    /** 🔥 Header 추가 */
+    createNav: string
+    walletAddressLabel: string
+    walletNetworkLabel: string
+    walletModalClose: string
   }
 > = {
+  /* -------------------------------------------------------------------------- */
+  /*                                   ENGLISH                                  */
+  /* -------------------------------------------------------------------------- */
   en: {
     tagline: 'One Cast, Many Languages.',
     directInput: 'Direct Input',
@@ -74,7 +114,46 @@ export const translations: Record<
     previewCasual:
       '"Hey everyone! 👋 So excited to share that we\'re launching {topic}! This is going to be amazing..."',
     previewCrypto: '"GM! 🚀 Dropping {topic} soon. LFG! This is what we\'ve been building..."',
+    leaderboardTitle: 'Leaderboard',
+    totalCasts: 'Total Casts',
+    activeCreators: 'Active Creators',
+    fullRankings: 'Full Rankings',
+    casts: 'Casts',
+    languages: 'Languages',
+    langsShort: 'Langs',
+    goldMedal: 'Gold Medal',
+    silverMedal: 'Silver Medal',
+    bronzeMedal: 'Bronze Medal',
+    profileTitle: 'Profile',
+    globalStats: 'Global Stats',
+    recentActivities: 'Recent Activities',
+    noActivities: 'No activities yet. Start creating casts to see them here!',
+    viewCast: 'View Cast',
+    settingsTitle: 'Settings',
+    aboutTitle: 'About',
+    viewDocs: 'View Documentation',
+    feedbackTitle: 'Feedback',
+    feedbackDescription: "Have suggestions or found a bug? We'd love to hear from you!",
+    submitFeedback: 'Submit Feedback',
+    accountTitle: 'Account',
+    viewMyProfile: 'View my Profile',
+    totalTranslationsLabel: 'Total Translations',
+    imagesPostedLabel: 'Images Posted',
+    languagesUsedLabel: 'Languages Used',
+    postedLabel: 'Posted',
+    aboutDescription:
+      'PolyCast is a Base Mini App that helps you create and share casts in multiple languages. One cast, many languages.',
+
+    /** 🔥 Header */
+    createNav: 'Create',
+    walletAddressLabel: 'Address',
+    walletNetworkLabel: 'Network',
+    walletModalClose: 'Close',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                    KOREAN                                   */
+  /* -------------------------------------------------------------------------- */
   ko: {
     tagline: '하나의 캐스트, 무한한 연결.',
     directInput: '직접 입력',
@@ -111,7 +190,46 @@ export const translations: Record<
     previewCasual:
       '"안녕하세요 여러분! 👋 {topic}를 런칭한다는 소식을 전하게 되어 너무 기쁩니다! 정말 멋질 거예요..."',
     previewCrypto: '"GM! 🚀 곧 {topic} 드랍합니다. LFG! 우리가 만들어온 것은..."',
+    leaderboardTitle: '리더보드',
+    totalCasts: '총 캐스트 수',
+    activeCreators: '활성 크리에이터',
+    fullRankings: '전체 순위',
+    casts: '캐스트',
+    languages: '언어',
+    langsShort: '언어',
+    goldMedal: '금메달',
+    silverMedal: '은메달',
+    bronzeMedal: '동메달',
+    profileTitle: '프로필',
+    globalStats: '글로벌 통계',
+    recentActivities: '최근 활동',
+    noActivities: '아직 활동이 없습니다. 캐스트를 만들어 보세요!',
+    viewCast: '캐스트 보기',
+    settingsTitle: '설정',
+    aboutTitle: '소개',
+    viewDocs: '문서 보기',
+    feedbackTitle: '피드백',
+    feedbackDescription: '개선 아이디어나 버그가 있다면 언제든지 알려주세요!',
+    submitFeedback: '피드백 보내기',
+    accountTitle: '계정',
+    viewMyProfile: '내 프로필 보기',
+    totalTranslationsLabel: '총 번역 수',
+    imagesPostedLabel: '이미지 게시 수',
+    languagesUsedLabel: '사용한 언어 수',
+    postedLabel: '게시됨',
+    aboutDescription:
+      'PolyCast는 여러 언어로 캐스트를 생성하고 공유할 수 있게 해주는 Base 미니 앱입니다. 하나의 캐스트로 전 세계와 소통해 보세요.',
+
+    /** 🔥 Header */
+    createNav: '생성하기',
+    walletAddressLabel: '주소',
+    walletNetworkLabel: '네트워크',
+    walletModalClose: '닫기',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   JAPANESE                                  */
+  /* -------------------------------------------------------------------------- */
   ja: {
     tagline: '一つのキャスト、無限の繋がり。',
     directInput: '直接入力',
@@ -149,7 +267,46 @@ export const translations: Record<
       '"「みなさんこんにちは！ 👋 {topic}をローンチすることを共有できて本当に嬉しいです！これは素晴らしいものになります...」"',
     previewCrypto:
       '"「GM！ 🚀 {topic}をまもなくドロップします。LFG！これが私たちが構築してきたものです...」"',
+    leaderboardTitle: 'リーダーボード',
+    totalCasts: '総キャスト数',
+    activeCreators: 'アクティブクリエイター',
+    fullRankings: '全ランキング',
+    casts: 'キャスト',
+    languages: '言語',
+    langsShort: '言語',
+    goldMedal: '金メダル',
+    silverMedal: '銀メダル',
+    bronzeMedal: '銅メダル',
+    profileTitle: 'プロフィール',
+    globalStats: 'グローバル統計',
+    recentActivities: '最近のアクティビティ',
+    noActivities: 'まだアクティビティがありません。キャストを作成してみましょう！',
+    viewCast: 'キャストを見る',
+    settingsTitle: '設定',
+    aboutTitle: '概要',
+    viewDocs: 'ドキュメントを見る',
+    feedbackTitle: 'フィードバック',
+    feedbackDescription: '提案やバグ報告があれば、ぜひお聞かせください。',
+    submitFeedback: 'フィードバックを送信',
+    accountTitle: 'アカウント',
+    viewMyProfile: 'マイプロフィールを見る',
+    totalTranslationsLabel: '合計翻訳数',
+    imagesPostedLabel: '投稿した画像',
+    languagesUsedLabel: '使用した言語数',
+    postedLabel: '投稿',
+    aboutDescription:
+      'PolyCast は複数の言語でキャストを作成・共有できる Base ミニアプリです。1つのキャストで世界中に届けましょう。',
+
+    /** 🔥 Header */
+    createNav: '作成',
+    walletAddressLabel: 'アドレス',
+    walletNetworkLabel: 'ネットワーク',
+    walletModalClose: '閉じる',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   CHINESE                                   */
+  /* -------------------------------------------------------------------------- */
   zh: {
     tagline: '一次发布，多语言传播。',
     directInput: '直接输入',
@@ -184,7 +341,46 @@ export const translations: Record<
     previewProfessional: '"我们很高兴宣布{topic}。这是我们发展路线图中的重要里程碑..."',
     previewCasual: '"大家好！ 👋 很高兴分享我们正在推出{topic}！这将会很棒..."',
     previewCrypto: '"GM！ 🚀 即将推出{topic}。LFG！这就是我们一直在构建的..."',
+    leaderboardTitle: '排行榜',
+    totalCasts: '总发布数',
+    activeCreators: '活跃创作者',
+    fullRankings: '完整排名',
+    casts: '发布',
+    languages: '语言',
+    langsShort: '语言',
+    goldMedal: '金牌',
+    silverMedal: '银牌',
+    bronzeMedal: '铜牌',
+    profileTitle: '个人资料',
+    globalStats: '全局统计',
+    recentActivities: '最近活动',
+    noActivities: '还没有活动。创建一些发布即可在这里看到！',
+    viewCast: '查看发布',
+    settingsTitle: '设置',
+    aboutTitle: '关于',
+    viewDocs: '查看文档',
+    feedbackTitle: '反馈',
+    feedbackDescription: '有建议或发现了错误？欢迎告诉我们！',
+    submitFeedback: '提交反馈',
+    accountTitle: '账户',
+    viewMyProfile: '查看我的资料',
+    totalTranslationsLabel: '总翻译数',
+    imagesPostedLabel: '发布的图片',
+    languagesUsedLabel: '使用的语言数',
+    postedLabel: '发布于',
+    aboutDescription:
+      'PolyCast 是一个 Base 迷你应用，帮助你用多种语言创建并分享发布。一条发布，多种语言。',
+
+    /** 🔥 Header */
+    createNav: '创建',
+    walletAddressLabel: '地址',
+    walletNetworkLabel: '网络',
+    walletModalClose: '关闭',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 SPANISH (ES)                                */
+  /* -------------------------------------------------------------------------- */
   es: {
     tagline: 'Un Cast, Muchos Idiomas.',
     directInput: 'Entrada Directa',
@@ -222,7 +418,46 @@ export const translations: Record<
       '"¡Hola a todos! 👋 ¡Muy emocionados de compartir que estamos lanzando {topic}! Esto va a ser increíble..."',
     previewCrypto:
       '"¡GM! 🚀 Lanzando {topic} pronto. ¡LFG! Esto es lo que hemos estado construyendo..."',
+    leaderboardTitle: 'Tabla de Clasificación',
+    totalCasts: 'Casts Totales',
+    activeCreators: 'Creadores Activos',
+    fullRankings: 'Clasificación Completa',
+    casts: 'Casts',
+    languages: 'Idiomas',
+    langsShort: 'Idiomas',
+    goldMedal: 'Medalla de Oro',
+    silverMedal: 'Medalla de Plata',
+    bronzeMedal: 'Medalla de Bronce',
+    profileTitle: 'Perfil',
+    globalStats: 'Estadísticas Globales',
+    recentActivities: 'Actividades Recientes',
+    noActivities: 'Aún no hay actividades. ¡Crea casts para verlos aquí!',
+    viewCast: 'Ver Cast',
+    settingsTitle: 'Configuración',
+    aboutTitle: 'Acerca de',
+    viewDocs: 'Ver Documentación',
+    feedbackTitle: 'Comentarios',
+    feedbackDescription: '¿Tienes sugerencias o encontraste un error? ¡Nos encantaría saberlo!',
+    submitFeedback: 'Enviar Comentarios',
+    accountTitle: 'Cuenta',
+    viewMyProfile: 'Ver mi Perfil',
+    totalTranslationsLabel: 'Traducciones Totales',
+    imagesPostedLabel: 'Imágenes Publicadas',
+    languagesUsedLabel: 'Idiomas Usados',
+    postedLabel: 'Publicado',
+    aboutDescription:
+      'PolyCast es una Mini App de Base que te ayuda a crear y compartir casts en múltiples idiomas. Un cast, muchos idiomas.',
+
+    /** 🔥 Header */
+    createNav: 'Crear',
+    walletAddressLabel: 'Dirección',
+    walletNetworkLabel: 'Red',
+    walletModalClose: 'Cerrar',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  FRENCH (FR)                                */
+  /* -------------------------------------------------------------------------- */
   fr: {
     tagline: 'Un Cast, Plusieurs Langues.',
     directInput: 'Saisie Directe',
@@ -259,7 +494,46 @@ export const translations: Record<
     previewCasual:
       '"Salut tout le monde ! 👋 Tellement content de partager que nous lançons {topic} ! Ça va être génial..."',
     previewCrypto: '"GM ! 🚀 Bientôt {topic}. LFG ! C\'est ce que nous avons construit..."',
+    leaderboardTitle: 'Classement',
+    totalCasts: 'Casts Totaux',
+    activeCreators: 'Créateurs Actifs',
+    fullRankings: 'Classement Complet',
+    casts: 'Casts',
+    languages: 'Langues',
+    langsShort: 'Langues',
+    goldMedal: "Médaille d'or",
+    silverMedal: "Médaille d'argent",
+    bronzeMedal: 'Médaille de bronze',
+    profileTitle: 'Profil',
+    globalStats: 'Statistiques Globales',
+    recentActivities: 'Activités Récentes',
+    noActivities: 'Aucune activité pour le moment. Créez des casts pour les voir ici !',
+    viewCast: 'Voir le Cast',
+    settingsTitle: 'Paramètres',
+    aboutTitle: 'À propos',
+    viewDocs: 'Voir la Documentation',
+    feedbackTitle: 'Retour',
+    feedbackDescription: 'Des suggestions ou un bug ? Nous serions ravis de vous lire !',
+    submitFeedback: 'Envoyer un Retour',
+    accountTitle: 'Compte',
+    viewMyProfile: 'Voir mon Profil',
+    totalTranslationsLabel: 'Traductions Totales',
+    imagesPostedLabel: 'Images Publiées',
+    languagesUsedLabel: 'Langues Utilisées',
+    postedLabel: 'Publié',
+    aboutDescription:
+      'PolyCast est une mini-application Base qui vous aide à créer et partager des casts dans plusieurs langues. Un cast, de nombreuses langues.',
+
+    /** 🔥 Header */
+    createNav: 'Créer',
+    walletAddressLabel: 'Adresse',
+    walletNetworkLabel: 'Réseau',
+    walletModalClose: 'Fermer',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  GERMAN (DE)                                */
+  /* -------------------------------------------------------------------------- */
   de: {
     tagline: 'Ein Cast, Viele Sprachen.',
     directInput: 'Direkte Eingabe',
@@ -296,7 +570,46 @@ export const translations: Record<
     previewCasual:
       '"Hallo zusammen! 👋 Freue mich so sehr mitzuteilen, dass wir {topic} starten! Das wird großartig..."',
     previewCrypto: '"GM! 🚀 Droppen bald {topic}. LFG! Das haben wir gebaut..."',
+    leaderboardTitle: 'Bestenliste',
+    totalCasts: 'Gesamt-Casts',
+    activeCreators: 'Aktive Creators',
+    fullRankings: 'Gesamtrangliste',
+    casts: 'Casts',
+    languages: 'Sprachen',
+    langsShort: 'Sprachen',
+    goldMedal: 'Goldmedaille',
+    silverMedal: 'Silbermedaille',
+    bronzeMedal: 'Bronzemedaille',
+    profileTitle: 'Profil',
+    globalStats: 'Globale Statistiken',
+    recentActivities: 'Letzte Aktivitäten',
+    noActivities: 'Noch keine Aktivitäten. Erstelle Casts, um sie hier zu sehen!',
+    viewCast: 'Cast ansehen',
+    settingsTitle: 'Einstellungen',
+    aboutTitle: 'Über',
+    viewDocs: 'Dokumentation ansehen',
+    feedbackTitle: 'Feedback',
+    feedbackDescription: 'Hast du Vorschläge oder einen Fehler gefunden? Wir freuen uns darauf!',
+    submitFeedback: 'Feedback senden',
+    accountTitle: 'Konto',
+    viewMyProfile: 'Mein Profil ansehen',
+    totalTranslationsLabel: 'Gesamtübersetzungen',
+    imagesPostedLabel: 'Veröffentlichte Bilder',
+    languagesUsedLabel: 'Verwendete Sprachen',
+    postedLabel: 'Gepostet',
+    aboutDescription:
+      'PolyCast ist eine Base Mini App, mit der du Casts in mehreren Sprachen erstellen und teilen kannst. Ein Cast, viele Sprachen.',
+
+    /** 🔥 Header */
+    createNav: 'Erstellen',
+    walletAddressLabel: 'Adresse',
+    walletNetworkLabel: 'Netzwerk',
+    walletModalClose: 'Schließen',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 PORTUGUESE (PT)                             */
+  /* -------------------------------------------------------------------------- */
   pt: {
     tagline: 'Um Cast, Muitos Idiomas.',
     directInput: 'Entrada Direta',
@@ -333,7 +646,46 @@ export const translations: Record<
     previewCasual:
       '"Olá pessoal! 👋 Muito empolgado em compartilhar que estamos lançando {topic}! Isso vai ser incrível..."',
     previewCrypto: '"GM! 🚀 Lançando {topic} em breve. LFG! Isto é o que temos construído..."',
+    leaderboardTitle: 'Placar',
+    totalCasts: 'Total de Casts',
+    activeCreators: 'Criadores Ativos',
+    fullRankings: 'Classificação Completa',
+    casts: 'Casts',
+    languages: 'Idiomas',
+    langsShort: 'Idiomas',
+    goldMedal: 'Medalha de Ouro',
+    silverMedal: 'Medalha de Prata',
+    bronzeMedal: 'Medalha de Bronze',
+    profileTitle: 'Perfil',
+    globalStats: 'Estatísticas Globais',
+    recentActivities: 'Atividades Recentes',
+    noActivities: 'Ainda não há atividades. Crie casts para vê-las aqui!',
+    viewCast: 'Ver Cast',
+    settingsTitle: 'Configurações',
+    aboutTitle: 'Sobre',
+    viewDocs: 'Ver Documentação',
+    feedbackTitle: 'Feedback',
+    feedbackDescription: 'Tem sugestões ou encontrou um bug? Adoraríamos saber!',
+    submitFeedback: 'Enviar Feedback',
+    accountTitle: 'Conta',
+    viewMyProfile: 'Ver meu Perfil',
+    totalTranslationsLabel: 'Traduções Totais',
+    imagesPostedLabel: 'Imagens Publicadas',
+    languagesUsedLabel: 'Idiomas Usados',
+    postedLabel: 'Publicado',
+    aboutDescription:
+      'PolyCast é um Mini App na Base que ajuda você a criar e compartilhar casts em vários idiomas. Um cast, muitos idiomas.',
+
+    /** 🔥 Header */
+    createNav: 'Criar',
+    walletAddressLabel: 'Endereço',
+    walletNetworkLabel: 'Rede',
+    walletModalClose: 'Fechar',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                VIETNAMESE (VI)                               */
+  /* -------------------------------------------------------------------------- */
   vi: {
     tagline: 'Một Cast, Nhiều Ngôn Ngữ.',
     directInput: 'Nhập Trực Tiếp',
@@ -370,7 +722,46 @@ export const translations: Record<
     previewCasual:
       '"Xin chào mọi người! 👋 Rất vui được chia sẻ rằng chúng tôi đang ra mắt {topic}! Điều này sẽ tuyệt vời..."',
     previewCrypto: '"GM! 🚀 Sắp ra mắt {topic}. LFG! Đây là những gì chúng tôi đã xây dựng..."',
+    leaderboardTitle: 'Bảng Xếp Hạng',
+    totalCasts: 'Tổng Casts',
+    activeCreators: 'Người Sáng Tạo Tích Cực',
+    fullRankings: 'Xếp Hạng Đầy Đủ',
+    casts: 'Casts',
+    languages: 'Ngôn Ngữ',
+    langsShort: 'Ngôn ngữ',
+    goldMedal: 'Huy chương Vàng',
+    silverMedal: 'Huy chương Bạc',
+    bronzeMedal: 'Huy chương Đồng',
+    profileTitle: 'Hồ sơ',
+    globalStats: 'Thống kê Toàn cầu',
+    recentActivities: 'Hoạt động Gần đây',
+    noActivities: 'Chưa có hoạt động nào. Hãy tạo casts để xem tại đây!',
+    viewCast: 'Xem Cast',
+    settingsTitle: 'Cài đặt',
+    aboutTitle: 'Giới thiệu',
+    viewDocs: 'Xem Tài liệu',
+    feedbackTitle: 'Phản hồi',
+    feedbackDescription: 'Có gợi ý hoặc phát hiện lỗi? Chúng tôi rất muốn nghe!',
+    submitFeedback: 'Gửi Phản hồi',
+    accountTitle: 'Tài khoản',
+    viewMyProfile: 'Xem Hồ sơ của tôi',
+    totalTranslationsLabel: 'Tổng số bản dịch',
+    imagesPostedLabel: 'Số hình ảnh đã đăng',
+    languagesUsedLabel: 'Số ngôn ngữ đã dùng',
+    postedLabel: 'Đã đăng',
+    aboutDescription:
+      'PolyCast là một Mini App trên Base giúp bạn tạo và chia sẻ casts bằng nhiều ngôn ngữ. Một cast, nhiều ngôn ngữ.',
+
+    /** 🔥 Header */
+    createNav: 'Tạo',
+    walletAddressLabel: 'Địa chỉ',
+    walletNetworkLabel: 'Mạng',
+    walletModalClose: 'Đóng',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                    THAI (TH)                                */
+  /* -------------------------------------------------------------------------- */
   th: {
     tagline: 'หนึ่งแคสต์ หลายภาษา',
     directInput: 'พิมพ์โดยตรง',
@@ -406,7 +797,46 @@ export const translations: Record<
     previewCasual:
       '"สวัสดีทุกคน! 👋 ดีใจมากที่จะแชร์ว่าเรากำลังเปิดตัว {topic}! มันจะสุดยอดมาก..."',
     previewCrypto: '"GM! 🚀 เร็วๆ นี้ {topic}. LFG! นี่คือสิ่งที่เราสร้างมา..."',
+    leaderboardTitle: 'ตารางจัดอันดับ',
+    totalCasts: 'จำนวน Casts ทั้งหมด',
+    activeCreators: 'ผู้สร้างที่ใช้งานอยู่',
+    fullRankings: 'อันดับทั้งหมด',
+    casts: 'Casts',
+    languages: 'ภาษา',
+    langsShort: 'ภาษา',
+    goldMedal: 'เหรียญทอง',
+    silverMedal: 'เหรียญเงิน',
+    bronzeMedal: 'เหรียญทองแดง',
+    profileTitle: 'โปรไฟล์',
+    globalStats: 'สถิติโลก',
+    recentActivities: 'กิจกรรมล่าสุด',
+    noActivities: 'ยังไม่มีกิจกรรม เริ่มสร้างแคสต์เพื่อแสดงที่นี่!',
+    viewCast: 'ดู Cast',
+    settingsTitle: 'การตั้งค่า',
+    aboutTitle: 'เกี่ยวกับ',
+    viewDocs: 'ดูเอกสาร',
+    feedbackTitle: 'ข้อเสนอแนะ',
+    feedbackDescription: 'มีข้อเสนอแนะหรือพบข้อบกพร่อง? เรายินดีรับฟัง!',
+    submitFeedback: 'ส่งข้อเสนอแนะ',
+    accountTitle: 'บัญชี',
+    viewMyProfile: 'ดูโปรไฟล์ของฉัน',
+    totalTranslationsLabel: 'จำนวนการแปลทั้งหมด',
+    imagesPostedLabel: 'จำนวนรูปภาพที่โพสต์',
+    languagesUsedLabel: 'จำนวนภาษาที่ใช้',
+    postedLabel: 'โพสต์เมื่อ',
+    aboutDescription:
+      'PolyCast เป็น Base Mini App ที่ช่วยให้คุณสร้างและแชร์แคสต์ได้หลายภาษา หนึ่งแคสต์ หลายภาษา.',
+
+    /** 🔥 Header */
+    createNav: 'สร้าง',
+    walletAddressLabel: 'ที่อยู่',
+    walletNetworkLabel: 'เครือข่าย',
+    walletModalClose: 'ปิด',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 INDONESIAN (ID)                             */
+  /* -------------------------------------------------------------------------- */
   id: {
     tagline: 'Satu Cast, Banyak Bahasa.',
     directInput: 'Input Langsung',
@@ -443,7 +873,46 @@ export const translations: Record<
     previewCasual:
       '"Hai semua! 👋 Sangat senang berbagi bahwa kami meluncurkan {topic}! Ini akan luar biasa..."',
     previewCrypto: '"GM! 🚀 Segera dropping {topic}. LFG! Inilah yang telah kami bangun..."',
+    leaderboardTitle: 'Papan Peringkat',
+    totalCasts: 'Total Casts',
+    activeCreators: 'Kreator Aktif',
+    fullRankings: 'Peringkat Lengkap',
+    casts: 'Casts',
+    languages: 'Bahasa',
+    langsShort: 'Bahasa',
+    goldMedal: 'Medali Emas',
+    silverMedal: 'Medali Perak',
+    bronzeMedal: 'Medali Perunggu',
+    profileTitle: 'Profil',
+    globalStats: 'Statistik Global',
+    recentActivities: 'Aktivitas Terbaru',
+    noActivities: 'Belum ada aktivitas. Buat cast untuk melihatnya di sini!',
+    viewCast: 'Lihat Cast',
+    settingsTitle: 'Pengaturan',
+    aboutTitle: 'Tentang',
+    viewDocs: 'Lihat Dokumentasi',
+    feedbackTitle: 'Masukan',
+    feedbackDescription: 'Punya saran atau menemukan bug? Kami ingin mendengarnya!',
+    submitFeedback: 'Kirim Masukan',
+    accountTitle: 'Akun',
+    viewMyProfile: 'Lihat Profil Saya',
+    totalTranslationsLabel: 'Total Terjemahan',
+    imagesPostedLabel: 'Gambar yang Diposting',
+    languagesUsedLabel: 'Bahasa yang Digunakan',
+    postedLabel: 'Diposting',
+    aboutDescription:
+      'PolyCast adalah Mini App di Base yang membantu Anda membuat dan membagikan cast dalam berbagai bahasa. Satu cast, banyak bahasa.',
+
+    /** 🔥 Header */
+    createNav: 'Buat',
+    walletAddressLabel: 'Alamat',
+    walletNetworkLabel: 'Jaringan',
+    walletModalClose: 'Tutup',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 ARABIC (AR)                                  */
+  /* -------------------------------------------------------------------------- */
   ar: {
     tagline: 'نشرة واحدة، لغات متعددة.',
     directInput: 'إدخال مباشر',
@@ -480,7 +949,46 @@ export const translations: Record<
     previewCasual:
       '"مرحبًا بالجميع! 👋 متحمسون جدًا لمشاركة أننا نطلق {topic}! سيكون هذا رائعًا..."',
     previewCrypto: '"GM! 🚀 قريبًا {topic}. LFG! هذا ما كنا نبني..."',
+    leaderboardTitle: 'لوحة الصدارة',
+    totalCasts: 'إجمالي النشرات',
+    activeCreators: 'المنشئون النشطون',
+    fullRankings: 'التصنيفات الكاملة',
+    casts: 'منشورات',
+    languages: 'اللغات',
+    langsShort: 'لغات',
+    goldMedal: 'الميدالية الذهبية',
+    silverMedal: 'الميدالية الفضية',
+    bronzeMedal: 'الميدالية البرونزية',
+    profileTitle: 'الملف الشخصي',
+    globalStats: 'إحصائيات عالمية',
+    recentActivities: 'الأنشطة الأخيرة',
+    noActivities: 'لا توجد أنشطة بعد. ابدأ بإنشاء منشورات لرؤيتها هنا!',
+    viewCast: 'عرض المنشور',
+    settingsTitle: 'الإعدادات',
+    aboutTitle: 'حول',
+    viewDocs: 'عرض التوثيق',
+    feedbackTitle: 'ملاحظات',
+    feedbackDescription: 'لديك اقتراحات أو وجدت خطأ؟ يسعدنا سماع ذلك!',
+    submitFeedback: 'إرسال الملاحظات',
+    accountTitle: 'الحساب',
+    viewMyProfile: 'عرض ملفي الشخصي',
+    totalTranslationsLabel: 'إجمالي الترجمات',
+    imagesPostedLabel: 'الصور المنشورة',
+    languagesUsedLabel: 'اللغات المستخدمة',
+    postedLabel: 'تم النشر',
+    aboutDescription:
+      'PolyCast هو تطبيق مصغر على Base يساعدك على إنشاء ومشاركة المنشورات بعدة لغات. منشور واحد، لغات متعددة.',
+
+    /** 🔥 Header */
+    createNav: 'إنشاء',
+    walletAddressLabel: 'العنوان',
+    walletNetworkLabel: 'الشبكة',
+    walletModalClose: 'إغلاق',
   },
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  HINDI (HI)                                  */
+  /* -------------------------------------------------------------------------- */
   hi: {
     tagline: 'एक कास्ट, कई भाषाएं।',
     directInput: 'सीधा इनपुट',
@@ -517,6 +1025,41 @@ export const translations: Record<
     previewCasual:
       '"नमस्ते सभी को! 👋 {topic} लॉन्च करने की खबर साझा करने के लिए बहुत उत्साहित हैं! यह अद्भुत होने वाला है..."',
     previewCrypto: '"GM! 🚀 जल्द ही {topic} ड्रॉप कर रहे हैं। LFG! यह वही है जो हम बना रहे हैं..."',
+    leaderboardTitle: 'लीडरबोर्ड',
+    totalCasts: 'कुल कास्ट',
+    activeCreators: 'सक्रिय क्रिएटर्स',
+    fullRankings: 'पूर्ण रैंकिंग',
+    casts: 'कास्ट',
+    languages: 'भाषाएँ',
+    langsShort: 'भाषाएँ',
+    goldMedal: 'स्वर्ण पदक',
+    silverMedal: 'रजत पदक',
+    bronzeMedal: 'कांस्य पदक',
+    profileTitle: 'प्रोफ़ाइल',
+    globalStats: 'वैश्विक आँकड़े',
+    recentActivities: 'हाल की गतिविधियाँ',
+    noActivities: 'अभी तक कोई गतिविधि नहीं। यहाँ देखने के लिए कास्ट बनाना शुरू करें!',
+    viewCast: 'कास्ट देखें',
+    settingsTitle: 'सेटिंग्स',
+    aboutTitle: 'परिचय',
+    viewDocs: 'डॉक्यूमेंटेशन देखें',
+    feedbackTitle: 'फीडबैक',
+    feedbackDescription: 'कोई सुझाव है या बग मिला? हमें बताने में संकोच न करें!',
+    submitFeedback: 'फीडबैक भेजें',
+    accountTitle: 'अकाउंट',
+    viewMyProfile: 'मेरा प्रोफ़ाइल देखें',
+    totalTranslationsLabel: 'कुल अनुवाद',
+    imagesPostedLabel: 'पोस्ट की गई छवियाँ',
+    languagesUsedLabel: 'प्रयुक्त भाषाएँ',
+    postedLabel: 'पोस्ट किया गया',
+    aboutDescription:
+      'PolyCast एक Base मिनी ऐप है जो आपको कई भाषाओं में कास्ट बनाने और साझा करने में मदद करता है। एक कास्ट, कई भाषाएँ।',
+
+    /** 🔥 Header */
+    createNav: 'बनाएँ',
+    walletAddressLabel: 'पता',
+    walletNetworkLabel: 'नेटवर्क',
+    walletModalClose: 'बंद करें',
   },
 }
 
@@ -716,7 +1259,7 @@ export const languageNames: Record<UILanguage, Record<Language, string>> = {
     it: 'อิตาลี',
     ru: 'รัสเซีย',
     ar: 'อาหรับ',
-    hi: 'ฮินดี',
+    hi: 'ฮินदी',
     vi: 'เวียดนาม',
     th: 'ไทย',
     id: 'อินโดนีเซีย',
@@ -787,21 +1330,21 @@ export const languageNames: Record<UILanguage, Record<Language, string>> = {
 }
 
 /**
- * 번역 텍스트를 가져오는 헬퍼 함수
+ * UI 언어별 전체 번역 객체 가져오기
  */
 export function getTranslation(lang: UILanguage = 'en') {
   return translations[lang] || translations.en
 }
 
 /**
- * 특정 키의 번역 텍스트를 가져오는 함수
+ * 특정 키 번역만 가져오기
  */
 export function t(lang: UILanguage, key: keyof typeof translations.en): string {
   return translations[lang]?.[key] || translations.en[key] || ''
 }
 
 /**
- * UI 언어에 따라 언어 이름을 가져오는 함수
+ * UI 언어 기준 언어 이름 가져오기
  */
 export function getLanguageName(uiLang: UILanguage, targetLang: Language): string {
   return languageNames[uiLang]?.[targetLang] || languageNames.en[targetLang] || targetLang

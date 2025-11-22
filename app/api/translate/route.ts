@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
           'x-litellm-api-key': process.env.FLOCK_API_KEY || '',
         },
         body: JSON.stringify({
-          model: 'qwen3-30b-a3b-instruct-2507',
+          model: 'qwen3-235b-a22b-thinking-2507',
           messages: [
             {
               role: 'system',
@@ -39,7 +39,11 @@ export async function POST(request: NextRequest) {
               } tone suitable for Farcaster.
 
 CRITICAL: Make the first sentence impactful and attention-grabbing, as the first 320 characters will be displayed in the feed preview. The opening should hook readers immediately.
-
+Hard rules:
+- Do NOT include any labels or headings like "CAST", "CAST (Farcaster):" or similar.
+- Do NOT use markdown formatting (no **bold**, lists, or numbered sections).
+- Do NOT use emojis.
+- Output only the cast body text, nothing else.
 Maintain the core message while adapting to ${
                 languageNames.en[lang as Language]
               } communication style and cultural context. Use natural expressions that resonate with native speakers.`,
@@ -60,8 +64,11 @@ Maintain the core message while adapting to ${
       }
 
       const data = await response.json()
-      const translatedText = data.content?.[0]?.text || ''
 
+      console.log('Flock generate-translated raw response:', JSON.stringify(data, null, 2))
+
+      // Flock 응답 구조에 맞춰 choices[0].message.content 에서 텍스트 추출
+      const translatedText = (data.choices?.[0]?.message?.content as string | undefined) || ''
       translations[lang] = {
         text: translatedText,
         previewText: translatedText.substring(0, 320),

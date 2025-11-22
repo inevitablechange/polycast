@@ -1,184 +1,143 @@
-# 🌐 PolyCast - One Cast, Many Languages
+# PolyCast — One Cast, Many Languages
 
-Turn your cast into a global conversation with AI-powered multilingual translation.
+A Mini App that automates multilingual posts on Farcaster: AI generation, multi-language translation, image handling, and per-language publishing with activity logging.
 
-## ✨ Features
+## Problem
 
-- 🤖 **AI-Powered Generation** - Let FLock AI write your original content
-- 🌍 **Multi-Language Translation** - Translate to 6 languages simultaneously
-- 🎨 **Style Adaptation** - Choose between Professional, Casual, or Crypto-native tones
-- 🖼️ **Image Support** - Add visuals that appear in all language versions
-- 🚀 **Quick Posting** - Post all translations with one click
-- 📱 **Feed Optimized** - First 320 characters optimized for preview
+Farcaster is growing globally, but content distribution remains English-centric. Non-English creators face friction:
 
-## 🛠️ Setup Instructions
+- Write original post
+- Translate via external tools (GPT / DeepL)
+- Copy & paste for each language
+- Repeat composer steps per language
+- Re-attach images per language
 
-### 1. Clone and Install
+This multi-step workflow is time-consuming and a barrier for creators who want global reach.
 
-```bash
-git clone <your-repo>
-cd polycast
-npm install
-```
+## Solution
 
-### 2. Environment Variables
+PolyCast automates the full multilingual publishing flow for Farcaster:
 
-Create a `.env.local` file:
+- Generate original copy with FLock AI from a keyword
+- Translate into multiple languages automatically
+- Upload and attach images once (Vercel Blob)
+- Create editable translation cards per language
+- Post per language using Base MiniKit composeCast()
+- Log activity in Supabase for profiles and leaderboards
 
-```env
-FLOCK_API_KEY=your_flock_api_key_here
-BLOB_READ_WRITE_TOKEN=your_vercel_blob_token_here
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
+Result: one input → many language posts → automated upload → activity tracking.
 
-**Get API Keys:**
+## Core Features
 
-- FLock API Key: Sign up at [platform.flock.io](https://platform.flock.io)
-- Vercel Blob Token: Create at [vercel.com/dashboard/stores](https://vercel.com/dashboard/stores)
+- AI Original Content (FLock)
+- Multi-language translation (EN, KO, JA, ZH, ES, FR + planned TH, VI)
+- Style presets: Professional, Casual, Crypto-native
+- Image upload & unified handling (Vercel Blob)
+- Translation cards: edit, preview, attach image per language
+- Post per Language via composeCast()
+- Supabase activity logs → Profile & Leaderboard
 
-### 3. Run Development Server
+## UX Flow
 
-```bash
-npm run dev
-```
+1. Create or generate original content
+2. Upload an image (optional)
+3. Select target languages and style
+4. Translate All → generate language cards
+5. Edit each card and preview
+6. Post per Language (composeCast())
+7. On success, log activity to Supabase
+8. View results in My Profile and Leaderboard
 
-Open [http://localhost:3000](http://localhost:3000)
+## Architecture
 
-### 4. Deploy to Vercel
+- Next.js 14 (App Router) + Tailwind CSS — UI and Mini App runtime
+- FLock API — AI generation & translation
+- Vercel Blob — image storage + public URLs
+- Base MiniKit SDK — composeCast(), viewCast(), openUrl actions
+- Supabase (Postgres) — activity logging, leaderboard, profiles
 
-```bash
-vercel deploy
-```
+Data flow:
+User Input → AI Generation / Image Upload → Translation Cards → Post per Language → Farcaster → Supabase Logging → Profile / Leaderboard
 
-### 5. Configure Manifest
+## Pages
 
-1. Update `public/.well-known/farcaster.json` with your domain
-2. Go to [base.dev/preview](https://base.dev/preview)
-3. Enter your domain and verify
-4. Copy the `accountAssociation` object
-5. Paste it into your manifest
+- Main Page: generate, upload image, choose languages, Translate All, language cards, Post per Language
+- Leaderboard: global creator rankings (language usage, volume)
+- My Profile: FID, avatar, stats, recent activities, PolyCast posts
+- Settings: About, Feedback, Theme, Account
 
-### 6. Publish
+## API Endpoints (project)
 
-Post your app URL in the Base app to publish!
+- POST /api/generate-original
+  Body: { topic: string, style: string }
+  Response: { originalText: string, previewText: string }
 
-## 📁 Project Structure
+- POST /api/translate
+  Body: { text: string, targetLanguages: string[], style: string }
+  Response: { translations: { [lang]: { text, previewText, charCount } } }
 
-```
-polycast/
-├── app/
-│   ├── api/
-│   │   ├── generate-original/
-│   │   │   └── route.ts          # AI text generation
-│   │   ├── translate/
-│   │   │   └── route.ts          # Multi-language translation
-│   │   └── upload-image/
-│   │       └── route.ts          # Image upload to Vercel Blob
-│   ├── layout.tsx                # Root layout with metadata
-│   ├── page.tsx                  # Main app UI
-│   └── globals.css               # Global styles
-├── lib/
-│   ├── types.ts                  # TypeScript types
-│   └── constants.ts              # App constants
-├── public/
-│   └── .well-known/
-│       └── farcaster.json        # Mini App manifest
-└── package.json
-```
+- POST /api/upload-image
+  Body: FormData with 'image' file
+  Response: { url: string, fileName: string, fileSize: number }
 
-## 🎨 Supported Languages
+## Setup
 
-- 🇺🇸 English (EN)
-- 🇯🇵 Japanese (JA)
-- 🇰🇷 Korean (KO)
-- 🇨🇳 Chinese (ZH)
-- 🇪🇸 Spanish (ES)
-- 🇫🇷 French (FR)
+1. Clone and install
+   git clone <your-repo>
+   cd polycast
+   npm install
 
-## 🎭 Style Options
+2. Environment (.env.local)
+   FLOCK_API_KEY=your_flock_api_key_here
+   BLOB_READ_WRITE_TOKEN=your_vercel_blob_token_here
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_KEY=your_supabase_key
 
-- **Professional** - Formal and informative tone
-- **Casual** - Friendly and conversational (default)
-- **Crypto-native** - Web3 savvy and punchy
+3. Dev
+   npm run dev
+   Open: http://localhost:3000
 
-## 🔧 Tech Stack
+4. Deploy
+   vercel deploy
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **AI/Translation**: FLock API
-- **Image Storage**: Vercel Blob
-- **Farcaster**: MiniKit SDK
-- **Hosting**: Vercel
+5. Manifest (Base / Farcaster)
+   - Update public/.well-known/farcaster.json with domain
+   - Verify at base.dev/preview and paste accountAssociation into manifest
 
-## 📝 Usage Flow
+## Roadmap
 
-1. **Create Content**
+- AI image generation
+- Thread translation
+- Translation history & undo
+- More languages (Vietnamese, Thai, etc.)
+- Performance analytics
+- Team collaboration features
 
-   - Type directly or use AI generation
-   - Add an image (optional)
+## Differentiators
 
-2. **Select Languages**
+- End-to-end publishing automation (not just translation)
+- Native Base Mini App UX (composeCast)
+- Image + text optimized for Farcaster
+- Activity logging + leaderboard for creator incentives
 
-   - Choose up to 5 target languages
-   - Pick your preferred tone
+## Expected Impact
 
-3. **Translate**
+- Reduce multilingual posting overhead by 80–90%
+- Increase global reach for non-English creators
+- Boost Farcaster multilingual content and Base Mini App adoption
 
-   - Click "Cast to World"
-   - Review translations
+## Contributing
 
-4. **Post**
-   - Post individually or use "Go Global"
-   - Each language opens in Composer
-   - Review and publish
+Contributions welcome. Please open an issue or PR.
 
-## 🚀 API Endpoints
-
-### Generate Original Text
-
-```
-POST /api/generate-original
-Body: { topic: string, style: string }
-Response: { originalText: string, previewText: string }
-```
-
-### Translate Text
-
-```
-POST /api/translate
-Body: { text: string, targetLanguages: string[], style: string }
-Response: { translations: { [lang]: { text, previewText, charCount } } }
-```
-
-### Upload Image
-
-```
-POST /api/upload-image
-Body: FormData with 'image' file
-Response: { url: string, fileName: string, fileSize: number }
-```
-
-## 🎯 Roadmap
-
-- [ ] AI image generation
-- [ ] Thread translation
-- [ ] Translation history
-- [ ] More languages (Vietnamese, Thai, etc.)
-- [ ] Performance analytics
-- [ ] Team collaboration features
-
-## 📄 License
+## License
 
 MIT
 
-## 🤝 Contributing
+## Contact / Support
 
-Contributions welcome! Please open an issue or PR.
+Open a GitHub issue for bugs, feature requests, or questions.
 
-## 💬 Support
-
-For issues or questions, please open a GitHub issue.
-
----
-
-**PolyCast** - Breaking through language barriers, one cast at a time. 🌍✨
+PolyCast — Breaking through language barriers, one cast at a time.
+// ...existing code...
