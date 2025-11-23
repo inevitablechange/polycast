@@ -70,6 +70,7 @@ const detectLanguage = (text: string): Language | null => {
 export default function Home() {
   const { uiLanguage } = useUiLanguage()
   const pathname = usePathname()
+
   const [currentStep, setCurrentStep] = useState<'input' | 'languages' | 'posting'>('input')
   const [inputMode, setInputMode] = useState<'manual' | 'ai'>('manual')
   const [originalText, setOriginalText] = useState('')
@@ -84,12 +85,21 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isTranslating, setIsTranslating] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+
   const [miniAppUser, setMiniAppUser] = useState<MiniAppUser | null>(null)
   const [userName, setUserName] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [isInMiniApp, setIsInMiniApp] = useState(false)
   const [fid, setFid] = useState<number | null>(null)
   const [sessionId, setSessionId] = useState<number | null>(null)
+  const [originalLang, setOriginalLang] = useState<Language | null>(null)
+
+  // Mini App capabilities (composeCast 지원 여부 등)
+  const [capabilities, setCapabilities] = useState<string[]>([])
+
+  // Add Mini App onboarding
+  const [showAddMiniApp, setShowAddMiniApp] = useState(false)
+  const [isAddingMiniApp, setIsAddingMiniApp] = useState(false)
 
   const t = getTranslation(uiLanguage)
 
@@ -97,7 +107,6 @@ export default function Home() {
     'bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm'
 
   const displayTranslations = translations
-  const [originalLang, setOriginalLang] = useState<Language | null>(null)
 
   useEffect(() => {
     const initMiniAppUser = async () => {
@@ -106,7 +115,17 @@ export default function Home() {
         setIsInMiniApp(miniAppStatus)
 
         if (!miniAppStatus) {
+          console.log('Not running inside Mini App host')
           return
+        }
+
+        // Get host capabilities
+        try {
+          const caps = await sdk.getCapabilities()
+          console.log('MiniApp capabilities:', caps)
+          setCapabilities(caps)
+        } catch (capErr) {
+          console.warn('Failed to get capabilities', capErr)
         }
 
         const context = await sdk.context
@@ -119,6 +138,17 @@ export default function Home() {
         setDisplayName(user.displayName || '')
         setFid(user.fid)
 
+        // First-run check for addMiniApp onboarding
+        try {
+          const hasSeen = window.localStorage.getItem('polycast-miniapp-added')
+          if (!hasSeen) {
+            setShowAddMiniApp(true)
+          }
+        } catch (e) {
+          console.warn('localStorage not available', e)
+        }
+
+        // Initialize user on backend
         try {
           const initResponse = await fetch('/api/user/init', {
             method: 'POST',
@@ -133,14 +163,13 @@ export default function Home() {
 
           if (!initResponse.ok) {
             console.warn('/api/user/init HTTP error:', initResponse.status)
-            return
-          }
-
-          const contentType = initResponse.headers.get('content-type')
-          if (contentType && contentType.includes('application/json')) {
-            const initData = await initResponse.json()
-            if (!initData.ok) {
-              console.warn('/api/user/init error:', initData.error)
+          } else {
+            const contentType = initResponse.headers.get('content-type')
+            if (contentType && contentType.includes('application/json')) {
+              const initData = await initResponse.json()
+              if (!initData.ok) {
+                console.warn('/api/user/init error:', initData.error)
+              }
             }
           }
         } catch (initError) {
@@ -159,6 +188,33 @@ export default function Home() {
 
     initMiniAppUser()
   }, [])
+
+  // Add Mini App handler
+  const handleAddMiniApp = async () => {
+    if (!isInMiniApp) {
+      alert('Mini App 환경에서만 앱 추가가 가능합니다.')
+      return
+    }
+
+    try {
+      setIsAddingMiniApp(true)
+      const result = await sdk.actions.addMiniApp()
+      console.log('MiniApp added:', result)
+
+      try {
+        window.localStorage.setItem('polycast-miniapp-added', '1')
+      } catch (e) {
+        console.warn('Failed to set localStorage flag', e)
+      }
+
+      setShowAddMiniApp(false)
+    } catch (err) {
+      console.error('addMiniApp error', err)
+      alert('앱 추가에 실패했습니다. 나중에 다시 시도해주세요.')
+    } finally {
+      setIsAddingMiniApp(false)
+    }
+  }
 
   // Reset function
   const resetToHome = () => {
@@ -211,8 +267,7 @@ export default function Home() {
     if (originalText.trim() && Object.keys(translations).length > 0) {
       setTranslations({})
       setEditableTranslations({})
-      // 필요하면 세션도 리셋:
-      // setSessionId(null)
+      // setSessionId(null) // 필요하면 세션도 리셋
     }
   }, [originalText])
 
@@ -332,7 +387,7 @@ export default function Home() {
           try {
             const errorData = await response.json()
             throw new Error(errorData.error || `HTTP error! status: ${response.status}`)
-          } catch (parseError) {
+          } catch {
             throw new Error(`HTTP error! status: ${response.status}`)
           }
         } else {
@@ -364,9 +419,8 @@ export default function Home() {
   const adjustTopicHeight = () => {
     const el = topicRef.current
     if (!el) return
-    // reset to calculate scrollHeight correctly
     el.style.height = 'auto'
-    const maxHeight = 160 // px, adjust as needed
+    const maxHeight = 160 // px
     const newHeight = Math.min(el.scrollHeight, maxHeight)
     el.style.height = `${newHeight}px`
     el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
@@ -454,11 +508,24 @@ export default function Home() {
     const text = editableTranslations[lang] || displayTranslations[lang]?.text
     if (!text) return
 
+    if (!isInMiniApp) {
+      alert('Cast는 Farcaster/Base Mini App 안에서만 보낼 수 있어요.')
+      return
+    }
+
     try {
-      await sdk.actions.composeCast({
-        text,
-        embeds: imageUrl ? [imageUrl] : [],
-      })
+      const canCompose = capabilities.includes('actions.composeCast')
+
+      if (canCompose) {
+        await sdk.actions.composeCast({
+          text,
+          embeds: imageUrl ? [imageUrl] : [],
+        })
+      } else {
+        // Fallback: Warpcast compose URL
+        const url = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`
+        await sdk.actions.openUrl({ url })
+      }
 
       // 1) Supabase cast_logs에 성공 로그 기록
       try {
@@ -496,7 +563,7 @@ export default function Home() {
       console.error('Post error:', error)
       alert('Failed to open composer. Please try again.')
 
-      // composeCast 자체가 실패했을 때도 로그 남기기
+      // composeCast/openUrl 실패했을 때도 로그 남기기
       try {
         if (fid) {
           await fetch('/api/log-cast', {
@@ -511,7 +578,7 @@ export default function Home() {
               castUrl: null,
               client: 'polycast-mini-app',
               status: 'failed',
-              errorMessage: (error as Error).message ?? 'composeCast failed',
+              errorMessage: (error as Error).message ?? 'composeCast/openUrl failed',
             }),
           })
         }
@@ -525,13 +592,25 @@ export default function Home() {
     const text = originalText
     if (!text) return
 
+    if (!isInMiniApp) {
+      alert('Cast는 Farcaster/Base Mini App 안에서만 보낼 수 있어요.')
+      return
+    }
+
     const targetLangForLog = originalLang ?? 'en' // 로그용 언어 코드 fallback
 
     try {
-      await sdk.actions.composeCast({
-        text,
-        embeds: imageUrl ? [imageUrl] : [],
-      })
+      const canCompose = capabilities.includes('actions.composeCast')
+
+      if (canCompose) {
+        await sdk.actions.composeCast({
+          text,
+          embeds: imageUrl ? [imageUrl] : [],
+        })
+      } else {
+        const url = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`
+        await sdk.actions.openUrl({ url })
+      }
 
       // 1) 원문 캐스트도 cast_logs에 기록
       try {
@@ -582,7 +661,7 @@ export default function Home() {
               castUrl: null,
               client: 'polycast-mini-app',
               status: 'failed',
-              errorMessage: (error as Error).message ?? 'composeCast failed',
+              errorMessage: (error as Error).message ?? 'composeCast/openUrl failed',
             }),
           })
         }
@@ -613,9 +692,28 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <main className="flex-1 max-w-3xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-6">
+        {/* Add Mini App Onboarding */}
+        {isInMiniApp && showAddMiniApp && (
+          <div className="mb-4 bg-purple-50 border border-purple-200 rounded-2xl p-4 sm:p-5 shadow-sm">
+            <h2 className="text-sm sm:text-base font-semibold text-purple-800 mb-1">
+              PolyCast를 Base 앱에 추가해 더 빠르게 사용해보세요
+            </h2>
+            <p className="text-xs sm:text-sm text-purple-900 mb-3 leading-relaxed">
+              Mini App으로 추가하면 홈 화면에서 바로 열 수 있고, 다국어 캐스트 작성과 번역 과정을 더
+              빠르게 이어서 진행할 수 있어요.
+            </p>
+            <button
+              onClick={handleAddMiniApp}
+              disabled={isAddingMiniApp}
+              className="inline-flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg bg-purple-600 text-white text-xs sm:text-sm font-medium hover:bg-purple-500 disabled:opacity-60"
+            >
+              {isAddingMiniApp ? '추가 중…' : 'Base 앱에 PolyCast 추가하기'}
+            </button>
+          </div>
+        )}
+
         {/* Step Indicator */}
         <div className="mb-6">
-          {/* Full Step Indicator - All Screens */}
           <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-center gap-2 sm:gap-3">
               {/* Step 1 */}
@@ -651,7 +749,7 @@ export default function Home() {
               </div>
 
               {/* Connector Line */}
-              <div className="relative flex-1 max-w-[60px] sm:max-w-[80px]">
+              <div className="relative flex-1 max-w-[60px] sm:max-w-20">
                 <div className="h-0.5 sm:h-1 bg-gray-200 rounded-full overflow-hidden">
                   <div
                     className={`h-full transition-all duration-500 ease-in-out ${
@@ -696,7 +794,7 @@ export default function Home() {
               </div>
 
               {/* Connector Line */}
-              <div className="relative flex-1 max-w-[60px] sm:max-w-[80px]">
+              <div className="relative flex-1 max-w-[60px] sm:max-w-20">
                 <div className="h-0.5 sm:h-1 bg-gray-200 rounded-full overflow-hidden">
                   <div
                     className={`h-full transition-all duration-500 ease-in-out ${
@@ -835,8 +933,7 @@ export default function Home() {
 
                 {/* 오른쪽 이미지 + 삭제 버튼 */}
                 {imageUrl && (
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
-                    {/* 삭제(X) 버튼 */}
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
                     <button
                       type="button"
                       onClick={handleRemoveImage}
@@ -845,7 +942,6 @@ export default function Home() {
                       <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" />
                     </button>
 
-                    {/* 이미지 (원본 비율 유지) */}
                     <img
                       src={imageUrl}
                       alt="Preview"
@@ -878,12 +974,12 @@ export default function Home() {
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-              뒤로
+              {t.back}
             </button>
 
             {/* Language Selection */}
             <div className={`${sectionCardClass}`}>
-              <h3 className="font-semibold mb-4 text-sm sm:text-base"> {t.whereTravel}</h3>
+              <h3 className="font-semibold mb-4 text-sm sm:text-base">{t.whereTravel}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
                 {Object.entries(LANGUAGES).map(([code, lang]) => {
                   const langCode = code as Language
@@ -953,12 +1049,8 @@ export default function Home() {
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-              뒤로
+              {t.back}
             </button>
-
-            <h2 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">
-              {t.yourGlobalMessage}
-            </h2>
 
             {/* Original Text Posting Option */}
             <div className={sectionCardClass}>
@@ -1148,7 +1240,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* ✅ Editable Preview */}
                 <textarea
                   ref={previewRef}
                   value={originalText}
@@ -1196,7 +1287,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            {/* Continue Button */}
 
             <div className="mt-6">
               <button
