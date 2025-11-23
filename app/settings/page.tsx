@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { sdk } from '@farcaster/miniapp-sdk'
 import { FileText, MessageSquare, User, ExternalLink } from 'lucide-react'
 import Header from '@/components/Header'
