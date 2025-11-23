@@ -198,13 +198,13 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setIsWalletModalOpen((v) => !v)}
-                className="shrink-0"
+                className="shrink-0 flex items-center justify-center"
                 aria-label="Open wallet info"
               >
                 <img
                   src={avatarSrc}
                   alt={userLabel || 'Profile'}
-                  className="rounded-full border border-gray-200 w-10 h-10 object-cover"
+                  className="rounded-full border border-gray-200 w-9 h-9 sm:w-10 sm:h-10 object-cover"
                 />
               </button>
               {isWalletModalOpen && (
