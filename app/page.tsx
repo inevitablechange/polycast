@@ -721,7 +721,7 @@ export default function Home() {
                   </div>
                 </div>
                 <span
-                  className={`text-[17px] font-medium transition-all duration-300 text-center ${
+                  className={`text-[12px] font-medium transition-all duration-300 text-center ${
                     currentStep === 'input'
                       ? 'bg-linear-to-r from-[#9333ea] to-[#a855f7] bg-clip-text text-transparent font-semibold'
                       : currentStep === 'languages' || currentStep === 'posting'
@@ -771,7 +771,7 @@ export default function Home() {
                   </div>
                 </div>
                 <span
-                  className={`text-[17px] font-medium transition-all duration-300 text-center ${
+                  className={`text-[12px] font-medium transition-all duration-300 text-center ${
                     currentStep === 'languages'
                       ? 'bg-linear-to-r from-[#a855f7] to-[#60a5fa] bg-clip-text text-transparent font-semibold'
                       : currentStep === 'posting'
@@ -815,7 +815,7 @@ export default function Home() {
                   </div>
                 </div>
                 <span
-                  className={`text-[17px] font-medium transition-all duration-300 text-center ${
+                  className={`text-[12px] font-medium transition-all duration-300 text-center ${
                     currentStep === 'posting'
                       ? 'bg-linear-to-r from-[#60a5fa] to-[#3b82f6] bg-clip-text text-transparent font-semibold'
                       : 'text-gray-500'
