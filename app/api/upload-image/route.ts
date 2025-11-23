@@ -26,14 +26,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Only PNG and JPG images are allowed' }, { status: 400 })
     }
 
-    // 4) Blob 토큰 체크 (없으면 무조건 500 나니까 미리 방어)
+    // 4) Blob 토큰 체크
     const token = process.env.BLOB_READ_WRITE_TOKEN
     if (!token) {
       console.error('BLOB_READ_WRITE_TOKEN is missing in environment variables')
       return NextResponse.json({ error: 'Blob token not configured on server' }, { status: 500 })
     }
 
-    // 5) 파일 이름 sanitize (공백/이상한 문자 최소화)
+    // 5) 파일 이름 sanitize
     const cleanedName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_') || 'image.jpg'
     const blobKey = `${Date.now()}-${cleanedName}`
 
@@ -41,13 +41,15 @@ export async function POST(request: NextRequest) {
     const blob = await put(blobKey, file, {
       access: 'public',
       token,
+      // ⚠️ contentType 을 명시해서 응답 헤더가 확실히 이미지로 나가게
+      contentType: file.type,
     })
 
-    // 🔥 Farcaster / Warpcast 에서 이미지로 인식하게 filename 쿼리 붙이기
-    const urlWithFilename = `${blob.url}?filename=${encodeURIComponent(cleanedName)}`
+    // ❌ filename 쿼리 안 붙이고, 그냥 blob.url 그대로 사용
+    const imageUrl = blob.url
 
     return NextResponse.json({
-      url: urlWithFilename, // 프론트에서는 이걸 그대로 embeds 로 사용
+      url: imageUrl,
       fileName: cleanedName,
       fileSize: file.size,
     })
