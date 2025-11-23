@@ -34,18 +34,21 @@ export async function POST(request: NextRequest) {
     }
 
     // 5) 파일 이름 sanitize (공백/이상한 문자 최소화)
-    const cleanedName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')
-    const fileName = `${Date.now()}-${cleanedName || 'image'}`
+    const cleanedName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_') || 'image.jpg'
+    const blobKey = `${Date.now()}-${cleanedName}`
 
     // 6) Vercel Blob 업로드
-    const blob = await put(fileName, file, {
+    const blob = await put(blobKey, file, {
       access: 'public',
       token,
     })
 
+    // 🔥 Farcaster / Warpcast 에서 이미지로 인식하게 filename 쿼리 붙이기
+    const urlWithFilename = `${blob.url}?filename=${encodeURIComponent(cleanedName)}`
+
     return NextResponse.json({
-      url: blob.url,
-      fileName,
+      url: urlWithFilename, // 프론트에서는 이걸 그대로 embeds 로 사용
+      fileName: cleanedName,
       fileSize: file.size,
     })
   } catch (error) {
