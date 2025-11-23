@@ -6,7 +6,7 @@ import { ChevronDown, Check, Menu, X } from 'lucide-react'
 import { LANGUAGES, UILanguage } from '@/lib/types'
 import { getTranslation } from '@/lib/i18n'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useUiLanguage } from './UiLanguageProvider'
 
 const UI_LANGUAGES: UILanguage[] = [
@@ -31,15 +31,28 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
   const t = getTranslation(uiLanguage)
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-3xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              // Always reset to home and clear state
+              if (pathname === '/') {
+                // Dispatch custom event to reset state
+                window.dispatchEvent(new CustomEvent('resetToHome'))
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              } else {
+                router.push('/')
+              }
+            }}
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <img src="/Polycast_logo1.png" alt="PolyCast Logo" className="w-36 h-14" />
-          </Link>
+          </button>
 
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Desktop Navigation */}
