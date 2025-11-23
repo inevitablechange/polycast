@@ -702,7 +702,7 @@ export default function Home() {
           <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-center gap-2 sm:gap-3">
               {/* Step 1 */}
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex-1 min-w-0 flex flex-col items-center gap-2">
                 <div className="relative">
                   <div
                     className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
@@ -741,9 +741,9 @@ export default function Home() {
         absolute left-0 top-0 h-full transition-all duration-500 ease-in-out
         ${
           currentStep === 'posting'
-            ? 'bg-gradient-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
+            ? 'bg-linear-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
             : currentStep === 'languages'
-            ? 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
+            ? 'bg-linear-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
             : 'w-0'
         }
       `}
@@ -752,7 +752,7 @@ export default function Home() {
               </div>
 
               {/* Step 2 */}
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex-1 min-w-0 flex flex-col items-center gap-2">
                 <div className="relative">
                   <div
                     className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
@@ -791,9 +791,9 @@ export default function Home() {
         absolute left-0 top-0 h-full transition-all duration-500 ease-in-out
         ${
           currentStep === 'posting'
-            ? 'bg-gradient-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
+            ? 'bg-linear-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
             : currentStep === 'languages'
-            ? 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
+            ? 'bg-linear-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
             : 'w-0'
         }
       `}
@@ -802,7 +802,7 @@ export default function Home() {
               </div>
 
               {/* Step 3 */}
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex-1 min-w-0 flex flex-col items-center gap-2">
                 <div className="relative">
                   <div
                     className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
