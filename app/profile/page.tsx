@@ -133,6 +133,9 @@ export default function ProfilePage() {
     })(),
   }
 
+  // 상위 몇 %인지 (대략)
+  const topPercent = myRank && totalCreators ? Math.round((myRank / totalCreators) * 100) : null
+
   const formatTimeAgo = (isoString: string | null) => {
     if (!isoString) return '-'
     const ts = new Date(isoString).getTime()
@@ -215,60 +218,96 @@ export default function ProfilePage() {
 
         {/* Global Stats */}
         <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm mb-4 sm:mb-6">
-          <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />
-            {t.globalStats}
-          </h3>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <div>
-              <div className="text-2xl font-bold text-purple-600">{stats.totalCasts}</div>
-              <div className="text-sm text-gray-600">{t.totalCasts}</div>
+          {/* 헤더 영역: 타이틀 + 공유 버튼 */}
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-2">
+              <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-purple-100">
+                <BarChart3 className="w-4 h-4 text-purple-600" />
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold">{t.globalStats}</h3>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-purple-600">{stats.totalTranslations}</div>
-              <div className="text-sm text-gray-600">{t.totalTranslationsLabel}</div>
+            <button
+              onClick={handleShareStats}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-purple-600 text-white hover:bg-purple-500 transition-colors"
+            >
+              📤 <span>Share my stats</span>
+            </button>
+          </div>
+
+          {/* 숫자 카드 4개 */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+            <div className="rounded-xl bg-purple-50 px-3 py-2.5 sm:px-4 sm:py-3">
+              <div className="text-[11px] sm:text-xs text-purple-700 font-medium uppercase tracking-wide">
+                {t.totalCasts}
+              </div>
+              <div className="mt-1 text-xl sm:text-2xl font-bold text-purple-900">
+                {stats.totalCasts}
+              </div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-purple-600">{stats.imagesPosted}</div>
-              <div className="text-sm text-gray-600">{t.imagesPostedLabel}</div>
+            <div className="rounded-xl bg-indigo-50 px-3 py-2.5 sm:px-4 sm:py-3">
+              <div className="text-[11px] sm:text-xs text-indigo-700 font-medium uppercase tracking-wide">
+                {t.totalTranslationsLabel}
+              </div>
+              <div className="mt-1 text-xl sm:text-2xl font-bold text-indigo-900">
+                {stats.totalTranslations}
+              </div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-purple-600">{stats.topLanguages.length}</div>
-              <div className="text-sm text-gray-600">{t.languagesUsedLabel}</div>
+            <div className="rounded-xl bg-sky-50 px-3 py-2.5 sm:px-4 sm:py-3">
+              <div className="text-[11px] sm:text-xs text-sky-700 font-medium uppercase tracking-wide">
+                {t.imagesPostedLabel}
+              </div>
+              <div className="mt-1 text-xl sm:text-2xl font-bold text-sky-900">
+                {stats.imagesPosted}
+              </div>
+            </div>
+            <div className="rounded-xl bg-purple-50 px-3 py-2.5 sm:px-4 sm:py-3">
+              <div className="text-[11px] sm:text-xs text-purple-700 font-medium uppercase tracking-wide">
+                {t.languagesUsedLabel}
+              </div>
+              <div className="mt-1 text-xl sm:text-2xl font-bold text-purple-900">
+                {stats.topLanguages.length}
+              </div>
             </div>
           </div>
 
-          {/* ✅ 내 리더보드 순위 카드 */}
-          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="border border-purple-100 rounded-xl px-4 py-3 flex items-center justify-between">
+          {/* ✅ 내 리더보드 순위 카드 (조금 더 컴팩트하게) */}
+          <div className="rounded-xl border border-purple-100 bg-purple-50/60 px-4 py-3 sm:px-5 sm:py-3.5 flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2">
               <div>
-                <div className="text-sm text-gray-600">
-                  {/* i18n에 "myRankLabel" 추가해두면 거기서 가져오고, 없으면 기본값 사용 */}
+                <div className="text-xs text-purple-700 font-medium">
                   {t.myRankLabel || 'My Rank'}
                 </div>
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-2xl sm:text-3xl font-extrabold text-purple-900 leading-tight">
                   {myRank ? `#${myRank}` : '-'}
                 </div>
               </div>
               {totalCreators && (
-                <div className="text-xs text-gray-500 text-right">
-                  {/* "outOfLabel": "out of {total} creators" 식으로 정의해두면 더 자연스러움 */}
+                <div className="text-right text-[11px] sm:text-xs text-purple-700">
                   {t.outOfLabel
                     ? t.outOfLabel.replace('{total}', String(totalCreators))
                     : `out of ${totalCreators} creators`}
+                  {topPercent && (
+                    <div className="mt-1 text-[10px] sm:text-[11px] text-purple-600">
+                      Top&nbsp;
+                      <span className="font-semibold">{topPercent}%</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          </div>
 
-          {/* 📤 Share my stats 버튼 */}
-          <div className="mt-4 flex justify-end">
-            <button
-              onClick={handleShareStats}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm sm:text-base font-medium bg-purple-600 text-white hover:bg-purple-500 transition-colors"
-            >
-              📤 Share my stats
-            </button>
+            {myRank && totalCreators && (
+              <div className="mt-1">
+                <div className="h-1.5 w-full rounded-full bg-purple-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-linear-to-r from-purple-500 via-indigo-500 to-sky-500"
+                    style={{
+                      width: `${Math.max(8, 100 - (myRank / totalCreators) * 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
