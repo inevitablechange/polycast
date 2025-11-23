@@ -168,7 +168,6 @@ export default function ProfilePage() {
       const textLines = [
         '📊 My PolyCast Global Stats',
         '',
-        `@${username}`,
         `Total Casts: ${stats.totalCasts}`,
         `Total Translations: ${stats.totalTranslations}`,
         `Images Posted: ${stats.imagesPosted}`,
@@ -179,7 +178,8 @@ export default function ProfilePage() {
           ? `Rank: #${myRank}`
           : '',
         '',
-        'Cast once, go global with PolyCast.',
+        'Cast once, go global with PolyCast.\n',
+        'https://polycast-five.vercel.app/',
       ].filter(Boolean)
 
       const text = textLines.join('\n')
