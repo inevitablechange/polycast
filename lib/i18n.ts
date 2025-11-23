@@ -74,6 +74,7 @@ export const translations: Record<
     walletNetworkLabel: string
     walletModalClose: string
     walletNotConnectedLabel: string
+    walletBalanceLabel: string
 
     /** Step Indicator */
     step1Input: string
@@ -167,6 +168,7 @@ The generated text will be auto-translated so you can publish in many languages 
     walletNetworkLabel: 'Network',
     walletModalClose: 'Close',
     walletNotConnectedLabel: 'Not connected',
+    walletBalanceLabel: 'Balance',
 
     /** Step Indicator */
     step1Input: 'Input Text',
@@ -260,6 +262,7 @@ The generated text will be auto-translated so you can publish in many languages 
     walletNetworkLabel: '네트워크',
     walletModalClose: '닫기',
     walletNotConnectedLabel: '지갑 미연결됨',
+    walletBalanceLabel: '잔액',
 
     /** Step Indicator */
     step1Input: '본문입력',
@@ -354,6 +357,7 @@ The generated text will be auto-translated so you can publish in many languages 
     walletNetworkLabel: 'ネットワーク',
     walletModalClose: '閉じる',
     walletNotConnectedLabel: 'ウォレット未接続',
+    walletBalanceLabel: '残高',
 
     /** Step Indicator */
     step1Input: 'テキスト入力',
@@ -445,6 +449,7 @@ The generated text will be auto-translated so you can publish in many languages 
     walletNetworkLabel: '网络',
     walletModalClose: '关闭',
     walletNotConnectedLabel: '钱包未连接',
+    walletBalanceLabel: '余额',
 
     /** Step Indicator */
     step1Input: '输入文本',
@@ -539,6 +544,7 @@ El texto generado se traducirá automáticamente para que puedas publicarlo al i
     walletNetworkLabel: 'Red',
     walletModalClose: 'Cerrar',
     walletNotConnectedLabel: 'Wallet no conectada',
+    walletBalanceLabel: 'Balance',
 
     /** Step Indicator */
     step1Input: 'Entrada de Texto',
@@ -632,6 +638,7 @@ Le texte généré sera automatiquement traduit afin que vous puissiez le publie
     walletNetworkLabel: 'Réseau',
     walletModalClose: 'Fermer',
     walletNotConnectedLabel: 'Portefeuille non connecté',
+    walletBalanceLabel: 'Solde',
 
     /** Step Indicator */
     step1Input: 'Saisie de Texte',
@@ -725,6 +732,7 @@ Der generierte Text wird automatisch übersetzt, sodass du ihn direkt in vielen 
     walletNetworkLabel: 'Netzwerk',
     walletModalClose: 'Schließen',
     walletNotConnectedLabel: 'Wallet nicht verbunden',
+    walletBalanceLabel: 'Guthaben',
 
     /** Step Indicator */
     step1Input: 'Texteingabe',
@@ -818,6 +826,7 @@ O texto gerado será traduzido automaticamente para que você publique em vário
     walletNetworkLabel: 'Rede',
     walletModalClose: 'Fechar',
     walletNotConnectedLabel: 'Carteira não conectada',
+    walletBalanceLabel: 'Saldo',
 
     /** Step Indicator */
     step1Input: 'Entrada de Texto',
@@ -911,6 +920,7 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     walletNetworkLabel: 'Mạng',
     walletModalClose: 'Đóng',
     walletNotConnectedLabel: 'Ví chưa kết nối',
+    walletBalanceLabel: 'Số dư',
 
     /** Step Indicator */
     step1Input: 'Nhập Văn Bản',
@@ -1002,6 +1012,7 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     walletAddressLabel: 'ที่อยู่',
     walletNetworkLabel: 'เครือข่าย',
     walletModalClose: 'ปิด',
+    walletBalanceLabel: 'ยอดคงเหลือ',
 
     /** Step Indicator */
     step1Input: 'ป้อนข้อความ',
@@ -1096,6 +1107,7 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     walletNetworkLabel: 'Jaringan',
     walletModalClose: 'Tutup',
     walletNotConnectedLabel: 'Wallet belum terhubung',
+    walletBalanceLabel: 'Saldo',
 
     /** Step Indicator */
     step1Input: 'Masukkan Teks',
@@ -1189,6 +1201,7 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     walletNetworkLabel: 'الشبكة',
     walletModalClose: 'إغلاق',
     walletNotConnectedLabel: 'المحفظة غير متصلة',
+    walletBalanceLabel: 'الرصيد',
 
     /** Step Indicator */
     step1Input: 'إدخال النص',
@@ -1282,6 +1295,7 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     walletNetworkLabel: 'नेटवर्क',
     walletModalClose: 'बंद करें',
     walletNotConnectedLabel: 'वॉलेट कनेक्ट नहीं है',
+    walletBalanceLabel: 'बैलेंस',
 
     /** Step Indicator */
     step1Input: 'पाठ दर्ज करें',
