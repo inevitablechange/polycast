@@ -734,15 +734,20 @@ export default function Home() {
               </div>
 
               {/* Connector Line */}
-              <div className="relative flex-1 max-w-[60px] sm:max-w-20">
-                <div className="h-0.5 sm:h-1 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex-1 flex items-center">
+                <div className="relative w-full h-[2px] sm:h-[4px] bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className={`h-full transition-all duration-500 ease-in-out ${
-                      currentStep === 'languages' || currentStep === 'posting'
-                        ? 'bg-linear-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
-                        : 'w-0'
-                    }`}
-                  ></div>
+                    className={`
+        absolute left-0 top-0 h-full transition-all duration-500 ease-in-out
+        ${
+          currentStep === 'posting'
+            ? 'bg-gradient-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
+            : currentStep === 'languages'
+            ? 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
+            : 'w-0'
+        }
+      `}
+                  />
                 </div>
               </div>
 
@@ -779,15 +784,20 @@ export default function Home() {
               </div>
 
               {/* Connector Line */}
-              <div className="relative flex-1 max-w-[60px] sm:max-w-20">
-                <div className="h-0.5 sm:h-1 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex-1 flex items-center">
+                <div className="relative w-full h-[2px] sm:h-[4px] bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className={`h-full transition-all duration-500 ease-in-out ${
-                      currentStep === 'posting'
-                        ? 'bg-linear-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
-                        : 'w-0'
-                    }`}
-                  ></div>
+                    className={`
+        absolute left-0 top-0 h-full transition-all duration-500 ease-in-out
+        ${
+          currentStep === 'posting'
+            ? 'bg-gradient-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
+            : currentStep === 'languages'
+            ? 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
+            : 'w-0'
+        }
+      `}
+                  />
                 </div>
               </div>
 
