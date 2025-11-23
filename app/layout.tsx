@@ -8,10 +8,13 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'PolyCast - One Cast, Many Languages',
   description: 'Turn your cast into a global conversation with AI-powered multilingual translation',
+  icons: {
+    icon: '/favicon.ico',
+  },
   other: {
     'fc:miniapp': JSON.stringify({
       version: 'next',
-      imageUrl: 'https://polycast-five.vercel.app/Polycast_logo2.png',
+      imageUrl: 'https://polycast-five.vercel.app/Polycast_logo1.png',
       button: {
         title: 'Cast Globally',
         action: {
