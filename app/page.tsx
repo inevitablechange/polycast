@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { sdk } from '@farcaster/miniapp-sdk'
 import {
   Globe,
@@ -139,6 +139,9 @@ export default function Home() {
   useEffect(() => {
     setOriginalLang(detectLanguage(originalText))
 
+    // Adjust preview textarea height whenever originalText changes
+    adjustPreviewHeight()
+
     if (originalText.trim() && Object.keys(translations).length > 0) {
       setTranslations({})
       setEditableTranslations({})
@@ -246,6 +249,41 @@ export default function Home() {
     } finally {
       setIsUploading(false)
     }
+  }
+
+  const handleRemoveImage = () => {
+    setImageUrl('')
+    setFileName('')
+    setIsUploading(false)
+  }
+
+  const topicRef = useRef<HTMLTextAreaElement | null>(null)
+
+  const adjustTopicHeight = () => {
+    const el = topicRef.current
+    if (!el) return
+    // reset to calculate scrollHeight correctly
+    el.style.height = 'auto'
+    const maxHeight = 160 // px, adjust as needed
+    const newHeight = Math.min(el.scrollHeight, maxHeight)
+    el.style.height = `${newHeight}px`
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
+  }
+
+  useEffect(() => {
+    adjustTopicHeight()
+  }, [topic])
+
+  const previewRef = useRef<HTMLTextAreaElement | null>(null)
+
+  const adjustPreviewHeight = () => {
+    const el = previewRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    const maxHeight = 320 // px
+    const newHeight = Math.min(el.scrollHeight, maxHeight)
+    el.style.height = `${newHeight}px`
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
   }
 
   const handleTranslate = async () => {
@@ -505,7 +543,8 @@ export default function Home() {
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
                 placeholder={t.placeholder}
-                className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm sm:text-base"
+                className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm sm:text-base min-h-5"
+                style={{ minHeight: '20px' }}
                 rows={5}
               />
               <div className="mt-2 text-sm text-gray-500">
@@ -514,12 +553,13 @@ export default function Home() {
             </div>
           ) : (
             <div>
-              <input
-                type="text"
+              <textarea
+                ref={topicRef}
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder={t.describeTopic}
-                className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent mb-3 text-sm sm:text-base"
+                className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm sm:text-base min-h-5"
+                rows={5}
               />
               <button
                 onClick={handleGenerateOriginal}
@@ -528,7 +568,7 @@ export default function Home() {
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="w-4 h-4 sm:w-5 h-5 sm:h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                     {t.generating}
                   </>
                 ) : (
@@ -569,7 +609,7 @@ export default function Home() {
               )}
             </label>
             {imageUrl && (
-              <div className="mt-2 flex justify-center">
+              <div className="mt-2 flex justify-center items-center gap-2">
                 <img
                   src={imageUrl}
                   alt="Preview"
@@ -579,6 +619,14 @@ export default function Home() {
                     e.currentTarget.style.display = 'none'
                   }}
                 />
+                <button
+                  onClick={handleRemoveImage}
+                  className="text-sm text-red-500 hover:text-red-600 flex items-center gap-1"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span className="sr-only">Remove image</span>
+                  <span className="hidden sm:inline">Delete</span>
+                </button>
               </div>
             )}
           </div>
@@ -599,21 +647,29 @@ export default function Home() {
                     {userName || 'Anonymous'}
                   </div>
                   <div className="text-xs sm:text-sm text-gray-500 truncate">
-                    {displayName || ''}
+                    @{displayName || ''}
                   </div>
                 </div>
               </div>
 
               <textarea
+                ref={previewRef}
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
                 placeholder={t.placeholder}
-                className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none"
-                rows={3}
+                className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none min-h-5 max-h-80 overflow-hidden"
+                style={{ minHeight: '20px' }}
               />
 
               {imageUrl && (
-                <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
+                <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200 relative">
+                  <button
+                    onClick={handleRemoveImage}
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                  >
+                    <Trash2 className="w-4 h-4 text-gray-600" />
+                    <span className="sr-only">Remove image</span>
+                  </button>
                   <img
                     src={imageUrl}
                     alt="Preview media"
@@ -696,7 +752,7 @@ export default function Home() {
           >
             {isTranslating ? (
               <>
-                <Loader2 className="w-5 h-5 sm:w-6 h-6 sm:h-6 animate-spin" />
+                <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
                 <span className="text-sm sm:text-base">{t.craftingMessage}</span>
               </>
             ) : (
@@ -741,9 +797,11 @@ export default function Home() {
                         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
                         <div className="min-w-0">
                           <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
-                            Username
+                            {userName || 'Anonymous'}
                           </div>
-                          <div className="text-xs sm:text-sm text-gray-500 truncate">@UserTag</div>
+                          <div className="text-xs sm:text-sm text-gray-500 truncate">
+                            @{userName || 'UserTag'}
+                          </div>
                         </div>
                       </div>
 
@@ -755,7 +813,8 @@ export default function Home() {
                             [lang]: e.target.value,
                           }))
                         }}
-                        className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none"
+                        className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none min-h-5"
+                        style={{ minHeight: '20px' }}
                         rows={3}
                       />
 
