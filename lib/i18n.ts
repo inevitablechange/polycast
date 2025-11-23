@@ -79,6 +79,10 @@ export const translations: Record<
     step2Language: string
     step3Posting: string
     nextLanguageSelection: string
+
+    /** Common navigation */
+    back: string
+    original: string
   }
 > = {
   /* -------------------------------------------------------------------------- */
@@ -167,6 +171,10 @@ The generated text will be auto-translated so you can publish in many languages 
     step2Language: 'Select Languages',
     step3Posting: 'Posting',
     nextLanguageSelection: 'Next: Select Languages',
+
+    /** Common navigation */
+    back: 'Back',
+    original: 'Original',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -255,6 +263,10 @@ The generated text will be auto-translated so you can publish in many languages 
     step2Language: '나라선택',
     step3Posting: '포스팅',
     nextLanguageSelection: '다음: 언어 선택',
+
+    /** Common navigation */
+    back: '뒤로',
+    original: '원문',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -344,6 +356,10 @@ The generated text will be auto-translated so you can publish in many languages 
     step2Language: '言語選択',
     step3Posting: '投稿',
     nextLanguageSelection: '次へ: 言語選択',
+
+    /** Common navigation */
+    back: '戻る',
+    original: '原文',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -430,6 +446,10 @@ The generated text will be auto-translated so you can publish in many languages 
     step2Language: '选择语言',
     step3Posting: '发布',
     nextLanguageSelection: '下一步: 选择语言',
+
+    /** Common navigation */
+    back: '返回',
+    original: '原文',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -519,6 +539,10 @@ El texto generado se traducirá automáticamente para que puedas publicarlo al i
     step2Language: 'Seleccionar Idiomas',
     step3Posting: 'Publicar',
     nextLanguageSelection: 'Siguiente: Seleccionar Idiomas',
+
+    /** Common navigation */
+    back: 'Atrás',
+    original: 'Original',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -607,6 +631,10 @@ Le texte généré sera automatiquement traduit afin que vous puissiez le publie
     step2Language: 'Sélectionner les Langues',
     step3Posting: 'Publication',
     nextLanguageSelection: 'Suivant: Sélectionner les Langues',
+
+    /** Common navigation */
+    back: 'Retour',
+    original: 'Texte Original',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -695,6 +723,10 @@ Der generierte Text wird automatisch übersetzt, sodass du ihn direkt in vielen 
     step2Language: 'Sprachen Auswählen',
     step3Posting: 'Veröffentlichen',
     nextLanguageSelection: 'Weiter: Sprachen Auswählen',
+
+    /** Common navigation */
+    back: 'Zurück',
+    original: 'Originaltext',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -783,6 +815,10 @@ O texto gerado será traduzido automaticamente para que você publique em vário
     step2Language: 'Selecionar Idiomas',
     step3Posting: 'Publicar',
     nextLanguageSelection: 'Próximo: Selecionar Idiomas',
+
+    /** Common navigation */
+    back: 'Voltar',
+    original: 'Original',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -871,6 +907,10 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     step2Language: 'Chọn Ngôn Ngữ',
     step3Posting: 'Đăng',
     nextLanguageSelection: 'Tiếp theo: Chọn Ngôn Ngữ',
+
+    /** Common navigation */
+    back: 'Quay lại',
+    original: 'Nguyên bản',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -958,6 +998,10 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     step2Language: 'เลือกภาษา',
     step3Posting: 'โพสต์',
     nextLanguageSelection: 'ถัดไป: เลือกภาษา',
+
+    /** Common navigation */
+    back: 'ย้อนกลับ',
+    original: 'ต้นฉบับ',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1046,6 +1090,10 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     step2Language: 'Pilih Bahasa',
     step3Posting: 'Posting',
     nextLanguageSelection: 'Selanjutnya: Pilih Bahasa',
+
+    /** Common navigation */
+    back: 'Kembali',
+    original: 'Teks Asli',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1134,6 +1182,10 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     step2Language: 'اختيار اللغات',
     step3Posting: 'النشر',
     nextLanguageSelection: 'التالي: اختيار اللغات',
+
+    /** Common navigation */
+    back: 'رجوع',
+    original: 'النص الأصلي',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1222,6 +1274,10 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     step2Language: 'भाषाएं चुनें',
     step3Posting: 'पोस्ट करें',
     nextLanguageSelection: 'अगला: भाषाएं चुनें',
+
+    /** Common navigation */
+    back: 'वापस',
+    original: 'मूल पाठ',
   },
 }
 

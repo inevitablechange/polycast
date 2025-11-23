@@ -1019,7 +1019,7 @@ export default function Home() {
               >
                 {isTranslating ? (
                   <>
-                    <Loader2 className="w-5 h-5 sm:w-6 h-6 sm:h-6 animate-spin" />
+                    <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
                     <span className="text-sm sm:text-base">{t.craftingMessage}</span>
                   </>
                 ) : (
@@ -1057,7 +1057,7 @@ export default function Home() {
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
                   <span className="text-xl sm:text-2xl"></span>
-                  <span>원문 (Original)</span>
+                  <span>{t.original}</span>
                 </h3>
               </div>
 
@@ -1135,7 +1135,9 @@ export default function Home() {
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
                           <span className="text-xl sm:text-2xl">{LANGUAGES[lang].flag}</span>
-                          <span className="truncate">{LANGUAGES[lang].name}</span>
+                          <span className="truncate">
+                            {getLanguageName(uiLanguage, lang as Language)}
+                          </span>
                         </h3>
                         <button
                           onClick={() => handleDeleteCard(lang)}
@@ -1151,10 +1153,10 @@ export default function Home() {
                             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
                             <div className="min-w-0">
                               <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
-                                Username
+                                {userName || 'Anonymous'}
                               </div>
                               <div className="text-xs sm:text-sm text-gray-500 truncate">
-                                @UserTag
+                                @{displayName || ''}
                               </div>
                             </div>
                           </div>
