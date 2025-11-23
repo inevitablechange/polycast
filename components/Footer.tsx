@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 export default function Footer() {
   return (
     <footer className="border-t border-gray-200 bg-gray-50 mt-auto">
@@ -9,7 +11,7 @@ export default function Footer() {
         </p>
         <p className="flex items-center justify-center gap-2 text-s sm:text-s text-gray-600">
           Powered By
-          <img src="/flockio.svg" alt="Flockio" className="inline-block h-4" />
+          <Image src="/FlockIo.svg" height={30} width={80} alt="Flock" />
         </p>
       </div>
     </footer>
