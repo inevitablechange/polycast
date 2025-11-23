@@ -192,10 +192,20 @@ export default function Home() {
     }
   }, [])
 
+  const previewRef = useRef<HTMLTextAreaElement | null>(null)
+
+  const adjustPreviewHeight = () => {
+    const el = previewRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    const maxHeight = 320 // px
+    const newHeight = Math.min(el.scrollHeight, maxHeight)
+    el.style.height = `${newHeight}px`
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
+  }
+
   useEffect(() => {
     setOriginalLang(detectLanguage(originalText))
-
-    // Adjust preview textarea height whenever originalText changes
     adjustPreviewHeight()
 
     if (originalText.trim() && Object.keys(translations).length > 0) {
@@ -276,8 +286,6 @@ export default function Home() {
       const data = await response.json()
       if (data.originalText) {
         setOriginalText(data.originalText)
-        // 텍스트 생성 완료 후 언어 선택 단계로 이동
-        setCurrentStep('languages')
       }
     } catch (error) {
       console.error('Generate error:', error)
@@ -367,18 +375,6 @@ export default function Home() {
   useEffect(() => {
     adjustTopicHeight()
   }, [topic])
-
-  const previewRef = useRef<HTMLTextAreaElement | null>(null)
-
-  const adjustPreviewHeight = () => {
-    const el = previewRef.current
-    if (!el) return
-    el.style.height = 'auto'
-    const maxHeight = 320 // px
-    const newHeight = Math.min(el.scrollHeight, maxHeight)
-    el.style.height = `${newHeight}px`
-    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
-  }
 
   const handleTranslate = async () => {
     if (!originalText.trim() || selectedLanguages.length === 0) return
@@ -628,9 +624,9 @@ export default function Home() {
                   <div
                     className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
                       currentStep === 'input'
-                        ? 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed] text-white shadow-lg shadow-[#9333ea]/30 scale-110'
+                        ? 'bg-linear-to-br from-[#9333ea] to-[#7c3aed] text-white shadow-lg shadow-[#9333ea]/30 scale-110'
                         : currentStep === 'languages' || currentStep === 'posting'
-                        ? 'bg-gradient-to-br from-[#a855f7] to-[#9333ea] text-white shadow-md scale-105'
+                        ? 'bg-linear-to-br from-[#a855f7] to-[#9333ea] text-white shadow-md scale-105'
                         : 'bg-gray-200 text-gray-500 scale-100'
                     }`}
                   >
@@ -644,7 +640,7 @@ export default function Home() {
                 <span
                   className={`text-[17px] font-medium transition-all duration-300 text-center ${
                     currentStep === 'input'
-                      ? 'bg-gradient-to-r from-[#9333ea] to-[#a855f7] bg-clip-text text-transparent font-semibold'
+                      ? 'bg-linear-to-r from-[#9333ea] to-[#a855f7] bg-clip-text text-transparent font-semibold'
                       : currentStep === 'languages' || currentStep === 'posting'
                       ? 'text-[#9333ea] font-semibold'
                       : 'text-gray-500'
@@ -660,7 +656,7 @@ export default function Home() {
                   <div
                     className={`h-full transition-all duration-500 ease-in-out ${
                       currentStep === 'languages' || currentStep === 'posting'
-                        ? 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
+                        ? 'bg-linear-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
                         : 'w-0'
                     }`}
                   ></div>
@@ -673,9 +669,9 @@ export default function Home() {
                   <div
                     className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
                       currentStep === 'languages'
-                        ? 'bg-gradient-to-br from-[#a855f7] to-[#60a5fa] text-white shadow-lg shadow-[#a855f7]/30 scale-110'
+                        ? 'bg-linear-to-br from-[#a855f7] to-[#60a5fa] text-white shadow-lg shadow-[#a855f7]/30 scale-110'
                         : currentStep === 'posting'
-                        ? 'bg-gradient-to-br from-[#a855f7] to-[#9333ea] text-white shadow-md scale-105'
+                        ? 'bg-linear-to-br from-[#a855f7] to-[#9333ea] text-white shadow-md scale-105'
                         : 'bg-gray-200 text-gray-500 scale-100'
                     }`}
                   >
@@ -689,7 +685,7 @@ export default function Home() {
                 <span
                   className={`text-[17px] font-medium transition-all duration-300 text-center ${
                     currentStep === 'languages'
-                      ? 'bg-gradient-to-r from-[#a855f7] to-[#60a5fa] bg-clip-text text-transparent font-semibold'
+                      ? 'bg-linear-to-r from-[#a855f7] to-[#60a5fa] bg-clip-text text-transparent font-semibold'
                       : currentStep === 'posting'
                       ? 'text-[#a855f7] font-semibold'
                       : 'text-gray-500'
@@ -705,7 +701,7 @@ export default function Home() {
                   <div
                     className={`h-full transition-all duration-500 ease-in-out ${
                       currentStep === 'posting'
-                        ? 'bg-gradient-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
+                        ? 'bg-linear-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
                         : 'w-0'
                     }`}
                   ></div>
@@ -718,7 +714,7 @@ export default function Home() {
                   <div
                     className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
                       currentStep === 'posting'
-                        ? 'bg-gradient-to-br from-[#60a5fa] to-[#3b82f6] text-white shadow-lg shadow-[#60a5fa]/30 scale-110'
+                        ? 'bg-linear-to-br from-[#60a5fa] to-[#3b82f6] text-white shadow-lg shadow-[#60a5fa]/30 scale-110'
                         : 'bg-gray-200 text-gray-500 scale-100'
                     }`}
                   >
@@ -728,7 +724,7 @@ export default function Home() {
                 <span
                   className={`text-[17px] font-medium transition-all duration-300 text-center ${
                     currentStep === 'posting'
-                      ? 'bg-gradient-to-r from-[#60a5fa] to-[#3b82f6] bg-clip-text text-transparent font-semibold'
+                      ? 'bg-linear-to-r from-[#60a5fa] to-[#3b82f6] bg-clip-text text-transparent font-semibold'
                       : 'text-gray-500'
                   }`}
                 >
@@ -781,21 +777,22 @@ export default function Home() {
               </div>
             ) : (
               <div>
-                <input
-                  type="text"
+                <textarea
+                  ref={topicRef}
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder={t.describeTopic}
-                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#a855f7] focus:border-transparent mb-3 text-sm sm:text-base"
+                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm sm:text-base min-h-5"
+                  rows={5}
                 />
                 <button
                   onClick={handleGenerateOriginal}
                   disabled={isGenerating || !topic.trim()}
-                  className="w-full py-2.5 sm:py-3 rounded-lg font-medium flex items-center justify-center gap-2 bg-[#9333ea] text-white hover:bg-[#a855f7] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                  className="w-full py-2.5 sm:py-3 rounded-lg font-medium flex items-center justify-center gap-2 bg-purple-600 text-white hover:bg-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 >
                   {isGenerating ? (
                     <>
-                      <Loader2 className="w-4 h-4 sm:w-5 h-5 sm:h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 sm:w-5  sm:h-5 animate-spin" />
                       {t.generating}
                     </>
                   ) : (
@@ -814,6 +811,7 @@ export default function Home() {
                 <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
                 {t.addVisual} ({t.optional})
               </h3>
+
               <input
                 type="file"
                 accept="image/png,image/jpeg,image/jpg"
@@ -821,47 +819,46 @@ export default function Home() {
                 className="hidden"
                 id="image-upload"
               />
-              <label
-                htmlFor="image-upload"
-                className="block w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-gray-400 transition-colors text-xs sm:text-sm"
-              >
-                {isUploading ? (
-                  <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin mx-auto" />
-                ) : imageUrl ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-xs sm:text-sm truncate max-w-full">{fileName}</span>
-                  </div>
-                ) : (
-                  <span className="text-gray-600">{t.clickToUpload}</span>
-                )}
-              </label>
-              {imageUrl && (
-                <div className="mt-2 flex justify-center">
-                  <img
-                    src={imageUrl}
-                    alt="Preview"
-                    className="rounded-lg max-h-20 w-auto object-contain border border-gray-200"
-                    onError={(e) => {
-                      console.error('Image load error:', imageUrl)
-                      e.currentTarget.style.display = 'none'
-                    }}
-                  />
-                </div>
-              )}
-            </div>
 
-            {/* Continue Button */}
-            {originalText.trim() && (
-              <div className="mt-6">
-                <button
-                  onClick={handleContinueToLanguages}
-                  className="w-full py-3 sm:py-4 bg-[#9333ea] text-white rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg hover:bg-[#a855f7] transition-colors flex items-center justify-center gap-2"
+              <div className="flex items-center gap-3">
+                {/* 작은 정사각형 + 버튼 */}
+                <label
+                  htmlFor="image-upload"
+                  className="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors text-gray-500 text-xl"
                 >
-                  <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
-                  <span className="text-sm sm:text-base">{t.nextLanguageSelection}</span>
-                </button>
+                  {isUploading ? (
+                    <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
+                  ) : (
+                    <span>+</span>
+                  )}
+                </label>
+
+                {/* 오른쪽 이미지 + 삭제 버튼 */}
+                {imageUrl && (
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
+                    {/* 삭제(X) 버튼 */}
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute -top-2 -right-2 bg-white p-1 rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                    >
+                      <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" />
+                    </button>
+
+                    {/* 이미지 (원본 비율 유지) */}
+                    <img
+                      src={imageUrl}
+                      alt="Preview"
+                      className="w-full h-full object-contain rounded-lg border border-gray-200 bg-gray-100"
+                      onError={(e) => {
+                        console.error('Image load error:', imageUrl)
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
 
@@ -1130,69 +1127,89 @@ export default function Home() {
           </div>
         )}
 
-        {/* Preview Section - Always shown at bottom */}
-        <div className={`${sectionCardClass} mt-6`}>
-          <h3 className="font-semibold mb-3 flex items-center gap-2 text-sm sm:text-base">
-            <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
-            {t.preview}
-          </h3>
-          <div className="border border-gray-200 rounded-xl overflow-hidden">
-            <div className="p-4 sm:p-5">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
-                <div className="min-w-0">
-                  <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
-                    {userName || 'Anonymous'}
+        {/* Preview Section - Hide on final (posting) step */}
+        {currentStep === 'input' && (
+          <div className={`${sectionCardClass} mt-6`}>
+            <h3 className="font-semibold mb-3 flex items-center gap-2 text-sm sm:text-base">
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+              {t.preview}
+            </h3>
+            <div className="border border-gray-200 rounded-xl overflow-hidden">
+              <div className="p-4 sm:p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                  <div className="min-w-0">
+                    <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                      {userName || 'Anonymous'}
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-500 truncate">
+                      @{displayName || ''}
+                    </div>
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-500 truncate">
-                    @{displayName || ''}
+                </div>
+
+                {/* ✅ Editable Preview */}
+                <textarea
+                  ref={previewRef}
+                  value={originalText}
+                  onChange={(e) => setOriginalText(e.target.value)}
+                  placeholder={t.placeholder}
+                  className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none min-h-[60px]"
+                  rows={3}
+                />
+
+                {imageUrl && (
+                  <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200 relative">
+                    <button
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    >
+                      <Trash2 className="w-4 h-4 text-gray-600" />
+                      <span className="sr-only">Remove image</span>
+                    </button>
+                    <img
+                      src={imageUrl}
+                      alt="Preview media"
+                      className="w-full max-h-80 object-cover bg-gray-100"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
                   </div>
-                </div>
-              </div>
+                )}
 
-              <div className="text-sm sm:text-base text-gray-900 whitespace-pre-wrap min-h-[60px]">
-                {originalText || <span className="text-gray-400 italic">{t.placeholder}</span>}
-              </div>
-
-              {imageUrl && (
-                <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200 relative">
-                  <button
-                    onClick={handleRemoveImage}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                  >
-                    <Trash2 className="w-4 h-4 text-gray-600" />
-                    <span className="sr-only">Remove image</span>
-                  </button>
-                  <img
-                    src={imageUrl}
-                    alt="Preview media"
-                    className="w-full max-h-80 object-cover bg-gray-100"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none'
-                    }}
-                  />
-                </div>
-              )}
-
-              <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
-                <div className="flex items-center gap-12">
+                <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
+                  <div className="flex items-center gap-12">
+                    <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                      <MessageCircle className="w-5 h-5" />
+                    </button>
+                    <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                      <Repeat2 className="w-5 h-5" />
+                    </button>
+                    <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                      <Heart className="w-5 h-5" />
+                    </button>
+                  </div>
                   <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                    <MessageCircle className="w-5 h-5" />
-                  </button>
-                  <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                    <Repeat2 className="w-5 h-5" />
-                  </button>
-                  <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                    <Heart className="w-5 h-5" />
+                    <Share className="w-5 h-5" />
                   </button>
                 </div>
-                <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                  <Share className="w-5 h-5" />
-                </button>
               </div>
             </div>
+            {/* Continue Button */}
+
+            <div className="mt-6">
+              <button
+                disabled={!originalText.trim()}
+                onClick={handleContinueToLanguages}
+                className="w-full py-3 sm:py-4 bg-[#9333ea] text-white rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg hover:bg-[#a855f7] transition-colors flex items-center justify-center gap-2"
+              >
+                <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
+                <span className="text-sm sm:text-base">{t.nextLanguageSelection}</span>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </main>
       <Footer />
     </div>
