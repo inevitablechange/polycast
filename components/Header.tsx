@@ -1,6 +1,7 @@
+// components/Header.tsx
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { sdk } from '@farcaster/miniapp-sdk'
 import { ChevronDown, Check, Menu, X } from 'lucide-react'
 import { LANGUAGES, UILanguage } from '@/lib/types'
@@ -8,6 +9,8 @@ import { getTranslation } from '@/lib/i18n'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useUiLanguage } from './UiLanguageProvider'
+import { useAccount, useBalance } from 'wagmi'
+import { base } from 'wagmi/chains'
 
 const UI_LANGUAGES: UILanguage[] = [
   'en',
@@ -25,6 +28,15 @@ const UI_LANGUAGES: UILanguage[] = [
   'hi',
 ]
 
+const shortenAddress = (addr?: string) => (addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '-')
+
+type MiniAppUser = {
+  fid: number
+  username?: string
+  displayName?: string
+  pfpUrl?: string
+}
+
 export default function Header() {
   const { uiLanguage, setUiLanguage } = useUiLanguage()
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
@@ -34,15 +46,60 @@ export default function Header() {
   const router = useRouter()
   const t = getTranslation(uiLanguage)
 
+  // wagmi: Base 지갑 정보
+  const { address, isConnected } = useAccount()
+  const { data: balanceData } = useBalance({
+    address,
+    chainId: base.id,
+    query: {
+      enabled: !!address, // ✅ v2 방식
+    },
+  })
+
+  // Farcaster Mini App 유저 정보 (프로필 사진 / 이름)
+  const [pfpUrl, setPfpUrl] = useState<string | null>(null)
+  const [userLabel, setUserLabel] = useState<string>('U')
+
+  useEffect(() => {
+    let cancelled = false
+
+    const initMiniAppUser = async () => {
+      try {
+        const inMiniApp = await sdk.isInMiniApp()
+        if (!inMiniApp || cancelled) return
+
+        const context = await sdk.context
+        const user = context.user as MiniAppUser | undefined
+        if (!user || cancelled) return
+
+        if (user.pfpUrl) setPfpUrl(user.pfpUrl)
+        const label = user.displayName || user.username || 'User'
+        setUserLabel(label)
+      } catch (e) {
+        console.warn('Failed to load mini app user for header:', e)
+      }
+    }
+
+    initMiniAppUser()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const avatarSrc =
+    pfpUrl ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      userLabel[0] || 'U',
+    )}&background=F3F4F6&color=111827`
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-3xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
         <div className="flex items-center justify-between">
+          {/* Logo / Home 버튼 */}
           <button
             onClick={() => {
-              // Always reset to home and clear state
               if (pathname === '/') {
-                // Dispatch custom event to reset state
                 window.dispatchEvent(new CustomEvent('resetToHome'))
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               } else {
@@ -145,23 +202,35 @@ export default function Header() {
                 aria-label="Open wallet info"
               >
                 <img
-                  src="https://ui-avatars.com/api/?name=U&background=F3F4F6&color=111827"
-                  alt="Profile"
-                  className="rounded-full border border-gray-200 justify-center items-center w-10 "
+                  src={avatarSrc}
+                  alt={userLabel || 'Profile'}
+                  className="rounded-full border border-gray-200 w-10 h-10 object-cover"
                 />
               </button>
               {isWalletModalOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setIsWalletModalOpen(false)} />
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl border border-gray-100 shadow-lg z-20 p-3">
-                    <div className="text-sm">
-                      <div className="flex items-center justify-between py-1.5">
-                        <span className="text-gray-500">{t.walletAddressLabel}</span>
-                        <span className="font-medium break-all">-</span>
-                      </div>
-                      <div className="flex items-center justify-between py-1.5">
+                    <div className="text-sm space-y-1.5">
+                      <div className="flex items-center justify-between">
                         <span className="text-gray-500">{t.walletNetworkLabel}</span>
-                        <span className="font-medium">-</span>
+                        <span className="font-medium">Base</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-500">{t.walletAddressLabel}</span>
+                        <span className="font-medium break-all">
+                          {isConnected ? shortenAddress(address) : t.walletNotConnectedLabel ?? '-'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-500">{t.walletBalanceLabel ?? 'Balance'}</span>
+                        <span className="font-medium">
+                          {balanceData
+                            ? `${(Number(balanceData.value) / 10 ** balanceData.decimals).toFixed(
+                                4,
+                              )} ${balanceData.symbol}`
+                            : '-'}
+                        </span>
                       </div>
                     </div>
                     <div className="pt-2 flex justify-end">
