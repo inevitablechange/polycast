@@ -97,8 +97,10 @@ export default function Home() {
   // Mini App capabilities (composeCast 지원 여부 등)
   const [capabilities, setCapabilities] = useState<string[]>([])
 
-  // Add Mini App onboarding
-  const [showAddMiniApp, setShowAddMiniApp] = useState(false)
+  // Mini App added 여부 (Base docs의 client.added 사용)
+  const [isMiniAppAdded, setIsMiniAppAdded] = useState<boolean | null>(null)
+
+  // Mini App 추가 진행 상태
   const [isAddingMiniApp, setIsAddingMiniApp] = useState(false)
 
   const t = getTranslation(uiLanguage)
@@ -107,6 +109,31 @@ export default function Home() {
     'bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm'
 
   const displayTranslations = translations
+
+  // Add Mini App handler (이제 자동 호출 용도로만 사용)
+  const handleAddMiniApp = async () => {
+    // 이미 추가 중이면 중복 호출 방지
+    if (isAddingMiniApp) return
+
+    if (!isInMiniApp) {
+      alert('Mini App 환경에서만 앱 추가가 가능합니다.')
+      return
+    }
+
+    try {
+      setIsAddingMiniApp(true)
+      const result = await sdk.actions.addMiniApp()
+      console.log('MiniApp added:', result)
+
+      // Base 클라이언트에서 Mini App이 정상적으로 추가된 경우
+      setIsMiniAppAdded(true)
+    } catch (err) {
+      console.error('addMiniApp error', err)
+      alert('앱 추가에 실패했습니다. 나중에 다시 시도해주세요.')
+    } finally {
+      setIsAddingMiniApp(false)
+    }
+  }
 
   useEffect(() => {
     const initMiniAppUser = async () => {
@@ -130,6 +157,11 @@ export default function Home() {
 
         const context = await sdk.context
         const user = context.user as MiniAppUser
+        const client = (context as any)?.client as { added?: boolean } | undefined
+
+        if (typeof client?.added === 'boolean') {
+          setIsMiniAppAdded(client.added)
+        }
 
         if (!user?.fid) return
 
@@ -137,16 +169,6 @@ export default function Home() {
         setUserName(user.username || '')
         setDisplayName(user.displayName || '')
         setFid(user.fid)
-
-        // First-run check for addMiniApp onboarding
-        try {
-          const hasSeen = window.localStorage.getItem('polycast-miniapp-added')
-          if (!hasSeen) {
-            setShowAddMiniApp(true)
-          }
-        } catch (e) {
-          console.warn('localStorage not available', e)
-        }
 
         // Initialize user on backend
         try {
@@ -189,32 +211,15 @@ export default function Home() {
     initMiniAppUser()
   }, [])
 
-  // Add Mini App handler
-  const handleAddMiniApp = async () => {
-    if (!isInMiniApp) {
-      alert('Mini App 환경에서만 앱 추가가 가능합니다.')
-      return
+  // farcaster/base 앱에 Mini App이 아직 추가되지 않은 경우,
+  // 앱 진입 시 자동으로 addMiniApp 실행
+  useEffect(() => {
+    if (!isInMiniApp) return
+    if (isMiniAppAdded === false) {
+      // 최초 한 번만 시도 (isAddingMiniApp으로 중복 방지)
+      handleAddMiniApp()
     }
-
-    try {
-      setIsAddingMiniApp(true)
-      const result = await sdk.actions.addMiniApp()
-      console.log('MiniApp added:', result)
-
-      try {
-        window.localStorage.setItem('polycast-miniapp-added', '1')
-      } catch (e) {
-        console.warn('Failed to set localStorage flag', e)
-      }
-
-      setShowAddMiniApp(false)
-    } catch (err) {
-      console.error('addMiniApp error', err)
-      alert('앱 추가에 실패했습니다. 나중에 다시 시도해주세요.')
-    } finally {
-      setIsAddingMiniApp(false)
-    }
-  }
+  }, [isInMiniApp, isMiniAppAdded])
 
   // Reset function
   const resetToHome = () => {
@@ -692,26 +697,6 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <main className="flex-1 max-w-3xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-6">
-        {/* Add Mini App Onboarding */}
-        {isInMiniApp && showAddMiniApp && (
-          <div className="mb-4 bg-purple-50 border border-purple-200 rounded-2xl p-4 sm:p-5 shadow-sm">
-            <h2 className="text-sm sm:text-base font-semibold text-purple-800 mb-1">
-              PolyCast를 Base 앱에 추가해 더 빠르게 사용해보세요
-            </h2>
-            <p className="text-xs sm:text-sm text-purple-900 mb-3 leading-relaxed">
-              Mini App으로 추가하면 홈 화면에서 바로 열 수 있고, 다국어 캐스트 작성과 번역 과정을 더
-              빠르게 이어서 진행할 수 있어요.
-            </p>
-            <button
-              onClick={handleAddMiniApp}
-              disabled={isAddingMiniApp}
-              className="inline-flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg bg-purple-600 text-white text-xs sm:text-sm font-medium hover:bg-purple-500 disabled:opacity-60"
-            >
-              {isAddingMiniApp ? '추가 중…' : 'Base 앱에 PolyCast 추가하기'}
-            </button>
-          </div>
-        )}
-
         {/* Step Indicator */}
         <div className="mb-6">
           <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
@@ -866,7 +851,7 @@ export default function Home() {
                   value={originalText}
                   onChange={(e) => setOriginalText(e.target.value)}
                   placeholder={t.placeholder}
-                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#a855f7] focus:border-transparent resize-none text-sm sm:text-base"
+                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#a855f7] focus:border-transparent resize-none text-base sm:text-base"
                   rows={5}
                 />
                 <div className="mt-2 text-sm text-gray-500">
@@ -880,7 +865,7 @@ export default function Home() {
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder={t.describeTopic}
-                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm sm:text-base min-h-5"
+                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-base sm:text-base min-h-5"
                   rows={5}
                 />
                 <button
@@ -1169,7 +1154,7 @@ export default function Home() {
                                 [lang]: e.target.value,
                               }))
                             }}
-                            className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none"
+                            className="w-full p-0 border-0 resize-none text-base sm:text-base text-gray-900 bg-transparent focus:outline-none"
                             rows={3}
                           />
 
@@ -1247,7 +1232,7 @@ export default function Home() {
                   value={originalText}
                   onChange={(e) => setOriginalText(e.target.value)}
                   placeholder={t.placeholder}
-                  className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none min-h-[60px]"
+                  className="w-full p-0 border-0 resize-none text-base sm:text-base text-gray-900 bg-transparent focus:outline-none min-h-[60px]"
                   rows={3}
                 />
 
