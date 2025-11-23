@@ -88,7 +88,10 @@ export const translations: Record<
     tagline: 'One Cast, Many Languages.',
     directInput: 'Direct Input',
     aiGenerate: 'AI Generate',
-    placeholder: "What's on your mind?",
+    placeholder: `Type anything you want to share.
+Your text will be automatically translated into the languages you select and turned into per-language cards.
+If you upload an image, it will also be attached to each language card.
+ - Example: “We’re excited to share our Project Roadmap 2.0 today!”`,
     chars: 'chars',
     firstCharsPreview: 'First 320 will show in preview',
     addVisual: 'Add Visual',
@@ -103,7 +106,10 @@ export const translations: Record<
     postNow: 'Post Now',
     goGlobal: 'Go Global 🌐',
     postAllLanguages: 'Post to all languages',
-    describeTopic: "Describe your topic (e.g., 'Announcing new DeFi protocol')",
+    describeTopic: `Tell AI the topic or keywords for the message you want it to write.
+Even one or two simple lines are enough for AI to generate a natural original post.
+The generated text will be auto-translated so you can publish in many languages instantly.
+ - Example: “Announce that we’re launching a new DeFi protocol.”`,
     generate: 'Generate',
     generating: 'Generating...',
     preview: 'Preview',
@@ -258,7 +264,10 @@ export const translations: Record<
     tagline: '一つのキャスト、無限の繋がり。',
     directInput: '直接入力',
     aiGenerate: 'AI生成',
-    placeholder: '何を考えていますか？',
+    placeholder: `伝えたい内容を自由に入力してください。
+入力した文章は、選択した言語に自動翻訳され、言語ごとのカードとして作成されます。
+画像をアップロードすると、各言語カードにも自動で添付されます。
+ - 例: 「今日はプロジェクトのロードマップ2.0を公開します！」`,
     chars: '文字',
     firstCharsPreview: '最初の320文字がプレビューに表示されます',
     addVisual: '画像追加',
@@ -273,7 +282,10 @@ export const translations: Record<
     postNow: '今すぐ投稿',
     goGlobal: 'グローバル投稿 🌐',
     postAllLanguages: '全言語に投稿',
-    describeTopic: 'トピックを説明してください（例：「新しいDeFiプロトコルの発表」）',
+    describeTopic: `AIに書いてほしい文章のテーマやキーワードを入力してください。
+1〜2行のシンプルな説明だけでも、自然なオリジナル文を生成できます。
+生成された文章は自動で翻訳され、複数の言語でそのまま投稿できます。
+ - 例: 「新しいDeFiプロトコルのローンチ告知を書いて。」`,
     generate: '生成',
     generating: '生成中...',
     preview: 'プレビュー',
@@ -341,7 +353,10 @@ export const translations: Record<
     tagline: '一次发布，多语言传播。',
     directInput: '直接输入',
     aiGenerate: 'AI生成',
-    placeholder: '你在想什么？',
+    placeholder: `请自由输入你想分享的内容。
+你输入的文字会自动翻译成你选择的语言，并生成为每种语言的卡片。
+如果上传图片，该图片也会自动附加到每个语言卡片中。
+ - 示例：“今天我们要公开项目的路线图 2.0！”`,
     chars: '字符',
     firstCharsPreview: '前320个字符将显示在预览中',
     addVisual: '添加图片',
@@ -356,7 +371,10 @@ export const translations: Record<
     postNow: '立即发布',
     goGlobal: '全球发布 🌐',
     postAllLanguages: '发布到所有语言',
-    describeTopic: '描述您的主题（例如："宣布新的DeFi协议"）',
+    describeTopic: `请输入你希望 AI 代写的主题或关键字。
+只要一两句话的简单说明，就能生成自然的原始文案。
+生成的文案会自动翻译，可以立刻以多种语言发布。
+ - 示例：“帮我写一条关于新 DeFi 协议上线的公告。”`,
     generate: '生成',
     generating: '生成中...',
     preview: '预览',
@@ -421,7 +439,10 @@ export const translations: Record<
     tagline: 'Un Cast, Muchos Idiomas.',
     directInput: 'Entrada Directa',
     aiGenerate: 'Generar con IA',
-    placeholder: '¿Qué estás pensando?',
+    placeholder: `Escribe libremente lo que quieras compartir.
+El texto que escribas se traducirá automáticamente a los idiomas que selecciones y se convertirá en tarjetas por idioma.
+Si subes una imagen, también se adjuntará automáticamente a cada tarjeta de idioma.
+ - Ejemplo: “Hoy presentamos la hoja de ruta 2.0 de nuestro proyecto.”`,
     chars: 'caracteres',
     firstCharsPreview: 'Los primeros 320 se mostrarán en la vista previa',
     addVisual: 'Añadir Visual',
@@ -436,7 +457,10 @@ export const translations: Record<
     postNow: 'Publicar Ahora',
     goGlobal: 'Hacerse Global 🌐',
     postAllLanguages: 'Publicar en todos los idiomas',
-    describeTopic: 'Describe tu tema (ej: "Anunciando nuevo protocolo DeFi")',
+    describeTopic: `Indícale a la IA el tema o las palabras clave del mensaje que quieres que escriba.
+Con una o dos líneas de descripción sencilla, generará un texto original y natural.
+El texto generado se traducirá automáticamente para que puedas publicarlo al instante en varios idiomas.
+ - Ejemplo: “Anuncia que estamos lanzando un nuevo protocolo DeFi.”`,
     generate: 'Generar',
     generating: 'Generando...',
     preview: 'Vista Previa',
@@ -504,7 +528,10 @@ export const translations: Record<
     tagline: 'Un Cast, Plusieurs Langues.',
     directInput: 'Saisie Directe',
     aiGenerate: 'Générer par IA',
-    placeholder: 'À quoi pensez-vous ?',
+    placeholder: `Saisissez librement le message que vous souhaitez partager.
+Le texte saisi sera automatiquement traduit dans les langues que vous sélectionnez et transformé en cartes par langue.
+Si vous téléchargez une image, elle sera également ajoutée automatiquement à chaque carte.
+ - Exemple : « Aujourd’hui, nous dévoilons la feuille de route 2.0 de notre projet ! »`,
     chars: 'caractères',
     firstCharsPreview: "Les 320 premiers apparaîtront dans l'aperçu",
     addVisual: 'Ajouter Visuel',
@@ -519,7 +546,10 @@ export const translations: Record<
     postNow: 'Publier Maintenant',
     goGlobal: 'Devenir Global 🌐',
     postAllLanguages: 'Publier dans toutes les langues',
-    describeTopic: 'Décrivez votre sujet (ex: "Annonce nouveau protocole DeFi")',
+    describeTopic: `Indiquez à l’IA le sujet ou quelques mots-clés du message que vous souhaitez qu’elle rédige.
+Une ou deux lignes de description simple suffisent pour générer un texte original et naturel.
+Le texte généré sera automatiquement traduit afin que vous puissiez le publier immédiatement dans plusieurs langues.
+ - Exemple : « Annonce le lancement de notre nouveau protocole DeFi. »`,
     generate: 'Générer',
     generating: 'Génération...',
     preview: 'Aperçu',
@@ -586,7 +616,10 @@ export const translations: Record<
     tagline: 'Ein Cast, Viele Sprachen.',
     directInput: 'Direkte Eingabe',
     aiGenerate: 'KI Generieren',
-    placeholder: 'Woran denkst du?',
+    placeholder: `Gib frei ein, was du mitteilen möchtest.
+Dein Text wird automatisch in die ausgewählten Sprachen übersetzt und als sprachspezifische Karten dargestellt.
+Wenn du ein Bild hochlädst, wird es ebenfalls automatisch zu jeder Sprachkarte hinzugefügt.
+ - Beispiel: „Heute veröffentlichen wir unsere Projekt-Roadmap 2.0!“`,
     chars: 'Zeichen',
     firstCharsPreview: 'Die ersten 320 werden in der Vorschau angezeigt',
     addVisual: 'Visuell Hinzufügen',
@@ -601,7 +634,10 @@ export const translations: Record<
     postNow: 'Jetzt Posten',
     goGlobal: 'Global Werden 🌐',
     postAllLanguages: 'In allen Sprachen posten',
-    describeTopic: 'Beschreibe dein Thema (z.B.: "Neues DeFi-Protokoll ankündigen")',
+    describeTopic: `Beschreibe der KI das Thema oder die Stichworte für den Text, den sie für dich schreiben soll.
+Schon ein oder zwei einfache Zeilen reichen aus, damit ein natürlicher Original-Post entsteht.
+Der generierte Text wird automatisch übersetzt, sodass du ihn direkt in vielen Sprachen veröffentlichen kannst.
+ - Beispiel: „Kündige an, dass wir ein neues DeFi-Protokoll starten.“`,
     generate: 'Generieren',
     generating: 'Generiere...',
     preview: 'Vorschau',
@@ -668,7 +704,10 @@ export const translations: Record<
     tagline: 'Um Cast, Muitos Idiomas.',
     directInput: 'Entrada Direta',
     aiGenerate: 'Gerar com IA',
-    placeholder: 'No que você está pensando?',
+    placeholder: `Digite livremente o que você quer compartilhar.
+O texto digitado será automaticamente traduzido para os idiomas que você selecionar e virará cartões por idioma.
+Se você enviar uma imagem, ela também será anexada automaticamente a cada cartão de idioma.
+ - Exemplo: “Hoje vamos revelar o Roadmap 2.0 do nosso projeto!”`,
     chars: 'caracteres',
     firstCharsPreview: 'Os primeiros 320 aparecerão na prévia',
     addVisual: 'Adicionar Visual',
@@ -683,7 +722,10 @@ export const translations: Record<
     postNow: 'Publicar Agora',
     goGlobal: 'Tornar Global 🌐',
     postAllLanguages: 'Publicar em todos os idiomas',
-    describeTopic: 'Descreva seu tópico (ex: "Anunciando novo protocolo DeFi")',
+    describeTopic: `Conte para a IA o tema ou as palavras-chave do texto que você quer que ela escreva.
+Com uma ou duas linhas de descrição simples, ela já consegue gerar um texto original e natural.
+O texto gerado será traduzido automaticamente para que você publique em vários idiomas em poucos cliques.
+ - Exemplo: “Anuncia que estamos lançando um novo protocolo DeFi.”`,
     generate: 'Gerar',
     generating: 'Gerando...',
     preview: 'Prévia',
@@ -750,7 +792,10 @@ export const translations: Record<
     tagline: 'Một Cast, Nhiều Ngôn Ngữ.',
     directInput: 'Nhập Trực Tiếp',
     aiGenerate: 'Tạo AI',
-    placeholder: 'Bạn đang nghĩ gì?',
+    placeholder: `Hãy nhập tự do những gì bạn muốn chia sẻ.
+Đoạn văn bạn nhập sẽ được tự động dịch sang các ngôn ngữ bạn chọn và hiển thị thành thẻ riêng cho từng ngôn ngữ.
+Nếu bạn tải lên hình ảnh, hình đó cũng sẽ tự động gắn với mọi thẻ ngôn ngữ.
+ - Ví dụ: “Hôm nay chúng mình công bố lộ trình 2.0 của dự án!”`,
     chars: 'ký tự',
     firstCharsPreview: '320 ký tự đầu sẽ hiển thị trong xem trước',
     addVisual: 'Thêm Hình Ảnh',
@@ -765,7 +810,10 @@ export const translations: Record<
     postNow: 'Đăng Ngay',
     goGlobal: 'Toàn Cầu Hóa 🌐',
     postAllLanguages: 'Đăng tất cả ngôn ngữ',
-    describeTopic: 'Mô tả chủ đề của bạn (vd: "Công bố giao thức DeFi mới")',
+    describeTopic: `Hãy cho AI biết chủ đề hoặc vài từ khóa của nội dung bạn muốn viết.
+Chỉ cần 1–2 dòng mô tả đơn giản là đủ để tạo ra một đoạn gốc tự nhiên.
+Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằng nhiều ngôn ngữ khác nhau.
+ - Ví dụ: “Hãy thông báo việc ra mắt một giao thức DeFi mới.”`,
     generate: 'Tạo',
     generating: 'Đang tạo...',
     preview: 'Xem Trước',
@@ -832,7 +880,10 @@ export const translations: Record<
     tagline: 'หนึ่งแคสต์ หลายภาษา',
     directInput: 'พิมพ์โดยตรง',
     aiGenerate: 'สร้างด้วย AI',
-    placeholder: 'คุณกำลังคิดอะไรอยู่?',
+    placeholder: `พิมพ์สิ่งที่คุณอยากบอกได้อย่างอิสระ
+ข้อความที่คุณพิมพ์จะถูกแปลเป็นภาษาที่คุณเลือกโดยอัตโนมัติ และแสดงเป็นการ์ดรายภาษา
+หากอัปโหลดรูปภาพ รูปนั้นจะถูกแนบไปกับทุกการ์ดภาษาให้เอง
+ - ตัวอย่าง: “วันนี้เราจะเปิดเผย Roadmap 2.0 ของโปรเจกต์เรา!”`,
     chars: 'ตัวอักษร',
     firstCharsPreview: '320 ตัวอักษรแรกจะแสดงในตัวอย่าง',
     addVisual: 'เพิ่มภาพ',
@@ -847,7 +898,10 @@ export const translations: Record<
     postNow: 'โพสต์เลย',
     goGlobal: 'ไปทั่วโลก 🌐',
     postAllLanguages: 'โพสต์ทุกภาษา',
-    describeTopic: 'อธิบายหัวข้อของคุณ (เช่น "ประกาศโปรโตคอล DeFi ใหม่")',
+    describeTopic: `บอกหัวข้อหรือคีย์เวิร์ดให้ AI ช่วยเขียนข้อความให้คุณ
+แค่ 1–2 บรรทัดอธิบายง่าย ๆ ก็เพียงพอที่จะสร้างข้อความต้นฉบับที่เป็นธรรมชาติ
+ข้อความที่สร้างเสร็จจะถูกแปลอัตโนมัติ เพื่อให้คุณโพสต์ได้หลายภาษาในครั้งเดียว
+ - ตัวอย่าง: “ช่วยประกาศข่าวการเปิดตัวโปรโตคอล DeFi ตัวใหม่ให้หน่อย”`,
     generate: 'สร้าง',
     generating: 'กำลังสร้าง...',
     preview: 'ตัวอย่าง',
@@ -913,7 +967,10 @@ export const translations: Record<
     tagline: 'Satu Cast, Banyak Bahasa.',
     directInput: 'Input Langsung',
     aiGenerate: 'Generate AI',
-    placeholder: 'Apa yang Anda pikirkan?',
+    placeholder: `Tulis bebas apa pun yang ingin Anda bagikan.
+Teks yang Anda masukkan akan otomatis diterjemahkan ke bahasa yang Anda pilih dan dibuat menjadi kartu per bahasa.
+Jika Anda mengunggah gambar, gambar tersebut juga akan otomatis disertakan di setiap kartu bahasa.
+ - Contoh: “Hari ini kami membagikan Roadmap 2.0 dari proyek kami!”`,
     chars: 'karakter',
     firstCharsPreview: '320 karakter pertama akan muncul di pratinjau',
     addVisual: 'Tambah Visual',
@@ -928,7 +985,10 @@ export const translations: Record<
     postNow: 'Posting Sekarang',
     goGlobal: 'Go Global 🌐',
     postAllLanguages: 'Posting semua bahasa',
-    describeTopic: 'Jelaskan topik Anda (mis: "Mengumumkan protokol DeFi baru")',
+    describeTopic: `Beritahu AI topik atau kata kunci dari pesan yang ingin Anda tulis.
+Cukup satu atau dua baris penjelasan sederhana agar AI dapat membuat teks asli yang terasa natural.
+Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting dalam banyak bahasa sekaligus.
+ - Contoh: “Umumkan bahwa kami akan meluncurkan protokol DeFi baru.”`,
     generate: 'Generate',
     generating: 'Generating...',
     preview: 'Pratinjau',
@@ -995,7 +1055,10 @@ export const translations: Record<
     tagline: 'نشرة واحدة، لغات متعددة.',
     directInput: 'إدخال مباشر',
     aiGenerate: 'إنشاء بالذكاء الاصطناعي',
-    placeholder: 'بماذا تفكر؟',
+    placeholder: `اكتب بحرية أي شيء تريد مشاركته.
+سيتم ترجمة النص الذي تكتبه تلقائيًا إلى اللغات التي تختارها، وتحويله إلى بطاقات منفصلة لكل لغة.
+إذا قمت برفع صورة، فستُرفق تلقائيًا مع كل بطاقة لغة أيضًا.
+ - مثال: "اليوم نكشف عن خريطة الطريق 2.0 لمشروعنا!"`,
     chars: 'حرف',
     firstCharsPreview: 'سيظهر أول 320 حرف في المعاينة',
     addVisual: 'إضافة صورة',
@@ -1010,7 +1073,10 @@ export const translations: Record<
     postNow: 'انشر الآن',
     goGlobal: 'انطلق عالميًا 🌐',
     postAllLanguages: 'انشر بجميع اللغات',
-    describeTopic: 'صف موضوعك (مثال: "الإعلان عن بروتوكول DeFi جديد")',
+    describeTopic: `أخبر الذكاء الاصطناعي بموضوع الرسالة أو بعض الكلمات المفتاحية التي تريد أن يكتبها لك.
+يكفي سطر أو سطران من الوصف البسيط لإنشاء نص أصلي وطبيعي.
+سيتم ترجمة النص الذي تم إنشاؤه تلقائيًا، بحيث يمكنك نشره فورًا بعدة لغات.
+ - مثال: "أعلن عن إطلاق بروتوكول DeFi جديد."`,
     generate: 'إنشاء',
     generating: 'جارٍ الإنشاء...',
     preview: 'معاينة',
@@ -1077,7 +1143,10 @@ export const translations: Record<
     tagline: 'एक कास्ट, कई भाषाएं।',
     directInput: 'सीधा इनपुट',
     aiGenerate: 'AI जेनरेट',
-    placeholder: 'आप क्या सोच रहे हैं?',
+    placeholder: `जो भी बात आप साझा करना चाहते हैं, उसे स्वतंत्र रूप से लिखें।
+आपका लिखा हुआ टेक्स्ट चुनी हुई भाषाओं में अपने-आप अनुवाद होगा और प्रत्येक भाषा के लिए अलग-अलग कार्ड के रूप में दिखेगा।
+अगर आप कोई इमेज अपलोड करते हैं, तो वह भी हर भाषा कार्ड में अपने-आप जुड़ जाएगी।
+ - उदाहरण: “आज हम अपने प्रोजेक्ट का रोडमैप 2.0 जारी कर रहे हैं!”`,
     chars: 'अक्षर',
     firstCharsPreview: 'पहले 320 पूर्वावलोकन में दिखाई देंगे',
     addVisual: 'छवि जोड़ें',
@@ -1092,7 +1161,10 @@ export const translations: Record<
     postNow: 'अभी पोस्ट करें',
     goGlobal: 'वैश्विक बनें 🌐',
     postAllLanguages: 'सभी भाषाओं में पोस्ट करें',
-    describeTopic: 'अपना विषय वर्णन करें (उदा: "नया DeFi प्रोटोकॉल घोषित करना")',
+    describeTopic: `AI को वह विषय या कीवर्ड बताएं जिसके बारे में आप चाहते हैं कि वह लिखे।
+सिर्फ एक–दो साधारण पंक्तियाँ भी पर्याप्त हैं, ताकि एक स्वाभाविक ओरिजिनल टेक्स्ट बन सके।
+बनाया गया टेक्स्ट अपने-आप कई भाषाओं में अनुवाद हो जाएगा, ताकि आप तुरंत वैश्विक रूप से पोस्ट कर सकें।
+ - उदाहरण: “नए DeFi प्रोटोकॉल के लॉन्च की घोषणा कर दो।”`,
     generate: 'जेनरेट',
     generating: 'जेनरेट हो रहा है...',
     preview: 'पूर्वावलोकन',
@@ -1349,7 +1421,7 @@ export const languageNames: Record<UILanguage, Record<Language, string>> = {
     it: 'อิตาลี',
     ru: 'รัสเซีย',
     ar: 'อาหรับ',
-    hi: 'ฮินदी',
+    hi: 'ฮินดี',
     vi: 'เวียดนาม',
     th: 'ไทย',
     id: 'อินโดนีเซีย',
