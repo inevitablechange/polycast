@@ -862,7 +862,7 @@ export default function Home() {
                   onChange={(e) => setOriginalText(e.target.value)}
                   placeholder={t.placeholder}
                   className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#a855f7] focus:border-transparent resize-none text-base sm:text-base"
-                  rows={5}
+                  rows={6}
                 />
                 <div className="mt-2 text-sm text-gray-500">
                   {originalText.length} {t.chars}
@@ -876,7 +876,7 @@ export default function Home() {
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder={t.describeTopic}
                   className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-base sm:text-base min-h-5"
-                  rows={5}
+                  rows={6}
                 />
                 <button
                   onClick={handleGenerateOriginal}
