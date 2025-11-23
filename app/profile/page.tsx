@@ -163,8 +163,6 @@ export default function ProfilePage() {
   // 📤 내 Global Stats를 "텍스트만" 캐스트로 공유
   const handleShareStats = async () => {
     try {
-      const username = userInfo.username || 'anonymous'
-
       const textLines = [
         '📊 My PolyCast Global Stats',
         '',
