@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { sdk } from '@farcaster/miniapp-sdk'
 import { usePathname } from 'next/navigation'
 import {
@@ -195,6 +195,9 @@ export default function Home() {
   useEffect(() => {
     setOriginalLang(detectLanguage(originalText))
 
+    // Adjust preview textarea height whenever originalText changes
+    adjustPreviewHeight()
+
     if (originalText.trim() && Object.keys(translations).length > 0) {
       setTranslations({})
       setEditableTranslations({})
@@ -340,6 +343,41 @@ export default function Home() {
     } finally {
       setIsUploading(false)
     }
+  }
+
+  const handleRemoveImage = () => {
+    setImageUrl('')
+    setFileName('')
+    setIsUploading(false)
+  }
+
+  const topicRef = useRef<HTMLTextAreaElement | null>(null)
+
+  const adjustTopicHeight = () => {
+    const el = topicRef.current
+    if (!el) return
+    // reset to calculate scrollHeight correctly
+    el.style.height = 'auto'
+    const maxHeight = 160 // px, adjust as needed
+    const newHeight = Math.min(el.scrollHeight, maxHeight)
+    el.style.height = `${newHeight}px`
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
+  }
+
+  useEffect(() => {
+    adjustTopicHeight()
+  }, [topic])
+
+  const previewRef = useRef<HTMLTextAreaElement | null>(null)
+
+  const adjustPreviewHeight = () => {
+    const el = previewRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    const maxHeight = 320 // px
+    const newHeight = Math.min(el.scrollHeight, maxHeight)
+    el.style.height = `${newHeight}px`
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
   }
 
   const handleTranslate = async () => {
@@ -1107,7 +1145,7 @@ export default function Home() {
                     {userName || 'Anonymous'}
                   </div>
                   <div className="text-xs sm:text-sm text-gray-500 truncate">
-                    {displayName || ''}
+                    @{displayName || ''}
                   </div>
                 </div>
               </div>
@@ -1117,7 +1155,14 @@ export default function Home() {
               </div>
 
               {imageUrl && (
-                <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
+                <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200 relative">
+                  <button
+                    onClick={handleRemoveImage}
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                  >
+                    <Trash2 className="w-4 h-4 text-gray-600" />
+                    <span className="sr-only">Remove image</span>
+                  </button>
                   <img
                     src={imageUrl}
                     alt="Preview media"

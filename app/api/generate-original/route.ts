@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
         'x-litellm-api-key': process.env.FLOCK_API_KEY || '',
       },
       body: JSON.stringify({
-        model: 'qwen3-235b-a22b-thinking-2507',
+        model: 'qwen3-235b-a22b-instruct-2507',
         messages: [
           {
             role: 'system',
@@ -30,6 +30,7 @@ Hard rules:
 - Do NOT use markdown formatting (no **bold**, lists, or numbered sections).
 - Do NOT use emojis.
 - Output only the cast body text, nothing else.
+- If not mentioned, write in the language of the topic
 
 The first 320 characters will appear in the feed preview, so make the opening sentence strong and self-contained.
 
@@ -37,7 +38,7 @@ Topic: ${topic}`,
           },
         ],
         max_tokens: 200,
-        temperature: 0.8,
+        temperature: 0.6,
       }),
     })
 
