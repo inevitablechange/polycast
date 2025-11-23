@@ -76,6 +76,10 @@ export const translations: Record<
     walletNotConnectedLabel: string
     walletBalanceLabel: string
 
+    /** 🆕 Profile Rank */
+    myRankLabel: string
+    outOfLabel: string
+
     /** Step Indicator */
     step1Input: string
     step2Language: string
@@ -170,6 +174,9 @@ The generated text will be auto-translated so you can publish in many languages 
     walletNotConnectedLabel: 'Not connected',
     walletBalanceLabel: 'Balance',
 
+    myRankLabel: 'My Rank',
+    outOfLabel: 'out of {total} creators',
+
     /** Step Indicator */
     step1Input: 'Input Text',
     step2Language: 'Select Languages',
@@ -263,6 +270,9 @@ The generated text will be auto-translated so you can publish in many languages 
     walletModalClose: '닫기',
     walletNotConnectedLabel: '지갑 미연결됨',
     walletBalanceLabel: '잔액',
+
+    myRankLabel: '나의 순위',
+    outOfLabel: '전체 {total}명 크리에이터 중',
 
     /** Step Indicator */
     step1Input: '본문입력',
@@ -359,6 +369,9 @@ The generated text will be auto-translated so you can publish in many languages 
     walletNotConnectedLabel: 'ウォレット未接続',
     walletBalanceLabel: '残高',
 
+    myRankLabel: 'マイランク',
+    outOfLabel: '全{total}クリエイター中',
+
     /** Step Indicator */
     step1Input: 'テキスト入力',
     step2Language: '言語選択',
@@ -450,6 +463,9 @@ The generated text will be auto-translated so you can publish in many languages 
     walletModalClose: '关闭',
     walletNotConnectedLabel: '钱包未连接',
     walletBalanceLabel: '余额',
+
+    myRankLabel: '我的排名',
+    outOfLabel: '在 {total} 位创作者中',
 
     /** Step Indicator */
     step1Input: '输入文本',
@@ -546,6 +562,9 @@ El texto generado se traducirá automáticamente para que puedas publicarlo al i
     walletNotConnectedLabel: 'Wallet no conectada',
     walletBalanceLabel: 'Balance',
 
+    myRankLabel: 'Mi Rango',
+    outOfLabel: 'de {total} creadores',
+
     /** Step Indicator */
     step1Input: 'Entrada de Texto',
     step2Language: 'Seleccionar Idiomas',
@@ -639,6 +658,9 @@ Le texte généré sera automatiquement traduit afin que vous puissiez le publie
     walletModalClose: 'Fermer',
     walletNotConnectedLabel: 'Portefeuille non connecté',
     walletBalanceLabel: 'Solde',
+
+    myRankLabel: 'Mon Rang',
+    outOfLabel: 'sur {total} créateurs',
 
     /** Step Indicator */
     step1Input: 'Saisie de Texte',
@@ -734,6 +756,9 @@ Der generierte Text wird automatisch übersetzt, sodass du ihn direkt in vielen 
     walletNotConnectedLabel: 'Wallet nicht verbunden',
     walletBalanceLabel: 'Guthaben',
 
+    myRankLabel: 'Mein Rang',
+    outOfLabel: 'von {total} Creators',
+
     /** Step Indicator */
     step1Input: 'Texteingabe',
     step2Language: 'Sprachen Auswählen',
@@ -827,6 +852,9 @@ O texto gerado será traduzido automaticamente para que você publique em vário
     walletModalClose: 'Fechar',
     walletNotConnectedLabel: 'Carteira não conectada',
     walletBalanceLabel: 'Saldo',
+
+    myRankLabel: 'Meu Ranking',
+    outOfLabel: 'entre {total} criadores',
 
     /** Step Indicator */
     step1Input: 'Entrada de Texto',
@@ -922,6 +950,9 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     walletNotConnectedLabel: 'Ví chưa kết nối',
     walletBalanceLabel: 'Số dư',
 
+    myRankLabel: 'Thứ hạng của tôi',
+    outOfLabel: 'trong tổng {total} người sáng tạo',
+
     /** Step Indicator */
     step1Input: 'Nhập Văn Bản',
     step2Language: 'Chọn Ngôn Ngữ',
@@ -1013,6 +1044,9 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     walletNetworkLabel: 'เครือข่าย',
     walletModalClose: 'ปิด',
     walletBalanceLabel: 'ยอดคงเหลือ',
+
+    myRankLabel: 'อันดับของฉัน',
+    outOfLabel: 'จากทั้งหมด {total} ครีเอเตอร์',
 
     /** Step Indicator */
     step1Input: 'ป้อนข้อความ',
@@ -1109,6 +1143,9 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     walletNotConnectedLabel: 'Wallet belum terhubung',
     walletBalanceLabel: 'Saldo',
 
+    myRankLabel: 'Peringkat Saya',
+    outOfLabel: 'dari total {total} kreator',
+
     /** Step Indicator */
     step1Input: 'Masukkan Teks',
     step2Language: 'Pilih Bahasa',
@@ -1203,6 +1240,9 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     walletNotConnectedLabel: 'المحفظة غير متصلة',
     walletBalanceLabel: 'الرصيد',
 
+    myRankLabel: 'ترتيبي',
+    outOfLabel: 'من أصل {total} منشئ محتوى',
+
     /** Step Indicator */
     step1Input: 'إدخال النص',
     step2Language: 'اختيار اللغات',
@@ -1296,6 +1336,9 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     walletModalClose: 'बंद करें',
     walletNotConnectedLabel: 'वॉलेट कनेक्ट नहीं है',
     walletBalanceLabel: 'बैलेंस',
+
+    myRankLabel: 'मेरा रैंक',
+    outOfLabel: 'कुल {total} क्रिएटर्स में से',
 
     /** Step Indicator */
     step1Input: 'पाठ दर्ज करें',

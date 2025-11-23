@@ -21,6 +21,17 @@ type RecentActivityFromApi = {
   translatedText: string | null
 }
 
+// ✅ /api/leaderboard 타입
+type LeaderboardEntry = {
+  fid: number
+  username: string | null
+  displayName: string | null
+  pfpUrl: string | null
+  totalCasts: number
+  totalLanguages: number
+  lastPostedAt: string | null
+}
+
 export default function ProfilePage() {
   const { uiLanguage } = useUiLanguage()
   const [activities, setActivities] = useState<RecentActivityFromApi[]>([])
@@ -31,6 +42,10 @@ export default function ProfilePage() {
     pfpUrl?: string
   }>({})
 
+  // ✅ 내 순위 + 전체 참가자 수
+  const [myRank, setMyRank] = useState<number | null>(null)
+  const [totalCreators, setTotalCreators] = useState<number | null>(null)
+
   const t = getTranslation(uiLanguage)
 
   useEffect(() => {
@@ -38,7 +53,13 @@ export default function ProfilePage() {
       try {
         const context = await sdk.context
         if (context?.user) {
-          const u = context.user
+          const u = context.user as {
+            fid?: number
+            username?: string
+            displayName?: string
+            pfpUrl?: string
+          }
+
           const nextUserInfo = {
             fid: u.fid,
             username: u.username,
@@ -47,8 +68,9 @@ export default function ProfilePage() {
           }
           setUserInfo(nextUserInfo)
 
-          // fid가 있을 때만 서버에서 최근 활동 불러오기
+          // fid가 있을 때만 서버에서 최근 활동 & 리더보드 불러오기
           if (u.fid) {
+            // 최근 활동
             try {
               const res = await fetch(`/api/recent-activities?fid=${u.fid}&limit=50`)
               const json = await res.json()
@@ -59,6 +81,27 @@ export default function ProfilePage() {
               }
             } catch (e) {
               console.error('Error fetching /api/recent-activities:', e)
+            }
+
+            // ✅ 리더보드 불러와서 내 순위 계산
+            try {
+              const lbRes = await fetch('/api/leaderboard')
+              const lbJson = await lbRes.json()
+              if (lbJson.ok && Array.isArray(lbJson.data)) {
+                const list = lbJson.data as LeaderboardEntry[]
+                setTotalCreators(list.length)
+
+                const index = list.findIndex((entry) => entry.fid === u.fid)
+                if (index !== -1) {
+                  setMyRank(index + 1) // 랭크는 1부터 시작
+                } else {
+                  setMyRank(null)
+                }
+              } else {
+                console.error('Failed to load leaderboard in profile:', lbJson.error)
+              }
+            } catch (e) {
+              console.error('/api/leaderboard fetch error (profile):', e)
             }
           }
         }
@@ -108,9 +151,43 @@ export default function ProfilePage() {
   const handleViewCast = async (url?: string | null) => {
     if (!url) return
     try {
-      await sdk.actions.openUrl(url)
+      await sdk.actions.openUrl({ url })
     } catch (error) {
       console.error('Failed to open cast:', error)
+    }
+  }
+
+  // 📤 내 Global Stats를 "텍스트만" 캐스트로 공유
+  const handleShareStats = async () => {
+    try {
+      const username = userInfo.username || 'anonymous'
+
+      const textLines = [
+        '📊 My PolyCast Global Stats',
+        '',
+        `@${username}`,
+        `Total Casts: ${stats.totalCasts}`,
+        `Total Translations: ${stats.totalTranslations}`,
+        `Images Posted: ${stats.imagesPosted}`,
+        `Languages Used: ${stats.topLanguages.length}`,
+        myRank && totalCreators
+          ? `Rank: #${myRank} / ${totalCreators}`
+          : myRank
+          ? `Rank: #${myRank}`
+          : '',
+        '',
+        'Cast once, go global with PolyCast.',
+      ].filter(Boolean)
+
+      const text = textLines.join('\n')
+
+      await sdk.actions.composeCast({
+        text,
+        embeds: [],
+      })
+    } catch (e) {
+      console.error('Failed to share stats:', e)
+      alert('Failed to open composer. Please try again.')
     }
   }
 
@@ -161,28 +238,38 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Top Languages */}
-          {stats.topLanguages.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold mb-2">Top Languages</h4>
-              <div className="flex flex-wrap gap-2">
-                {stats.topLanguages.map(({ language, count }) => {
-                  const langCode = language as Language
-                  const langMeta = LANGUAGES[langCode]
-                  const label =
-                    langMeta && languageNames[uiLanguage][langCode]
-                      ? languageNames[uiLanguage][langCode]
-                      : language
-                  return (
-                    <div key={language} className="px-3 py-1 bg-purple-50 rounded-full text-sm">
-                      {langMeta && <span className="mr-1">{langMeta.flag}</span>}
-                      {label} ({count})
-                    </div>
-                  )
-                })}
+          {/* ✅ 내 리더보드 순위 카드 */}
+          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="border border-purple-100 rounded-xl px-4 py-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm text-gray-600">
+                  {/* i18n에 "myRankLabel" 추가해두면 거기서 가져오고, 없으면 기본값 사용 */}
+                  {t.myRankLabel || 'My Rank'}
+                </div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {myRank ? `#${myRank}` : '-'}
+                </div>
               </div>
+              {totalCreators && (
+                <div className="text-xs text-gray-500 text-right">
+                  {/* "outOfLabel": "out of {total} creators" 식으로 정의해두면 더 자연스러움 */}
+                  {t.outOfLabel
+                    ? t.outOfLabel.replace('{total}', String(totalCreators))
+                    : `out of ${totalCreators} creators`}
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* 📤 Share my stats 버튼 */}
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={handleShareStats}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm sm:text-base font-medium bg-purple-600 text-white hover:bg-purple-500 transition-colors"
+            >
+              📤 Share my stats
+            </button>
+          </div>
         </div>
 
         {/* Recent Activities */}
