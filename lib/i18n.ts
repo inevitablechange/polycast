@@ -73,6 +73,12 @@ export const translations: Record<
     walletAddressLabel: string
     walletNetworkLabel: string
     walletModalClose: string
+
+    /** Step Indicator */
+    step1Input: string
+    step2Language: string
+    step3Posting: string
+    nextLanguageSelection: string
   }
 > = {
   /* -------------------------------------------------------------------------- */
@@ -149,6 +155,12 @@ export const translations: Record<
     walletAddressLabel: 'Address',
     walletNetworkLabel: 'Network',
     walletModalClose: 'Close',
+
+    /** Step Indicator */
+    step1Input: 'Input Text',
+    step2Language: 'Select Languages',
+    step3Posting: 'Posting',
+    nextLanguageSelection: 'Next: Select Languages',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -225,6 +237,12 @@ export const translations: Record<
     walletAddressLabel: '주소',
     walletNetworkLabel: '네트워크',
     walletModalClose: '닫기',
+
+    /** Step Indicator */
+    step1Input: '본문입력',
+    step2Language: '나라선택',
+    step3Posting: '포스팅',
+    nextLanguageSelection: '다음: 언어 선택',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -302,6 +320,12 @@ export const translations: Record<
     walletAddressLabel: 'アドレス',
     walletNetworkLabel: 'ネットワーク',
     walletModalClose: '閉じる',
+
+    /** Step Indicator */
+    step1Input: 'テキスト入力',
+    step2Language: '言語選択',
+    step3Posting: '投稿',
+    nextLanguageSelection: '次へ: 言語選択',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -376,6 +400,12 @@ export const translations: Record<
     walletAddressLabel: '地址',
     walletNetworkLabel: '网络',
     walletModalClose: '关闭',
+
+    /** Step Indicator */
+    step1Input: '输入文本',
+    step2Language: '选择语言',
+    step3Posting: '发布',
+    nextLanguageSelection: '下一步: 选择语言',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -453,6 +483,12 @@ export const translations: Record<
     walletAddressLabel: 'Dirección',
     walletNetworkLabel: 'Red',
     walletModalClose: 'Cerrar',
+
+    /** Step Indicator */
+    step1Input: 'Entrada de Texto',
+    step2Language: 'Seleccionar Idiomas',
+    step3Posting: 'Publicar',
+    nextLanguageSelection: 'Siguiente: Seleccionar Idiomas',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -529,6 +565,12 @@ export const translations: Record<
     walletAddressLabel: 'Adresse',
     walletNetworkLabel: 'Réseau',
     walletModalClose: 'Fermer',
+
+    /** Step Indicator */
+    step1Input: 'Saisie de Texte',
+    step2Language: 'Sélectionner les Langues',
+    step3Posting: 'Publication',
+    nextLanguageSelection: 'Suivant: Sélectionner les Langues',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -605,6 +647,12 @@ export const translations: Record<
     walletAddressLabel: 'Adresse',
     walletNetworkLabel: 'Netzwerk',
     walletModalClose: 'Schließen',
+
+    /** Step Indicator */
+    step1Input: 'Texteingabe',
+    step2Language: 'Sprachen Auswählen',
+    step3Posting: 'Veröffentlichen',
+    nextLanguageSelection: 'Weiter: Sprachen Auswählen',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -681,6 +729,12 @@ export const translations: Record<
     walletAddressLabel: 'Endereço',
     walletNetworkLabel: 'Rede',
     walletModalClose: 'Fechar',
+
+    /** Step Indicator */
+    step1Input: 'Entrada de Texto',
+    step2Language: 'Selecionar Idiomas',
+    step3Posting: 'Publicar',
+    nextLanguageSelection: 'Próximo: Selecionar Idiomas',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -757,6 +811,12 @@ export const translations: Record<
     walletAddressLabel: 'Địa chỉ',
     walletNetworkLabel: 'Mạng',
     walletModalClose: 'Đóng',
+
+    /** Step Indicator */
+    step1Input: 'Nhập Văn Bản',
+    step2Language: 'Chọn Ngôn Ngữ',
+    step3Posting: 'Đăng',
+    nextLanguageSelection: 'Tiếp theo: Chọn Ngôn Ngữ',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -832,6 +892,12 @@ export const translations: Record<
     walletAddressLabel: 'ที่อยู่',
     walletNetworkLabel: 'เครือข่าย',
     walletModalClose: 'ปิด',
+
+    /** Step Indicator */
+    step1Input: 'ป้อนข้อความ',
+    step2Language: 'เลือกภาษา',
+    step3Posting: 'โพสต์',
+    nextLanguageSelection: 'ถัดไป: เลือกภาษา',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -908,6 +974,12 @@ export const translations: Record<
     walletAddressLabel: 'Alamat',
     walletNetworkLabel: 'Jaringan',
     walletModalClose: 'Tutup',
+
+    /** Step Indicator */
+    step1Input: 'Masukkan Teks',
+    step2Language: 'Pilih Bahasa',
+    step3Posting: 'Posting',
+    nextLanguageSelection: 'Selanjutnya: Pilih Bahasa',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -984,6 +1056,12 @@ export const translations: Record<
     walletAddressLabel: 'العنوان',
     walletNetworkLabel: 'الشبكة',
     walletModalClose: 'إغلاق',
+
+    /** Step Indicator */
+    step1Input: 'إدخال النص',
+    step2Language: 'اختيار اللغات',
+    step3Posting: 'النشر',
+    nextLanguageSelection: 'التالي: اختيار اللغات',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1060,6 +1138,12 @@ export const translations: Record<
     walletAddressLabel: 'पता',
     walletNetworkLabel: 'नेटवर्क',
     walletModalClose: 'बंद करें',
+
+    /** Step Indicator */
+    step1Input: 'पाठ दर्ज करें',
+    step2Language: 'भाषाएं चुनें',
+    step3Posting: 'पोस्ट करें',
+    nextLanguageSelection: 'अगला: भाषाएं चुनें',
   },
 }
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { sdk } from '@farcaster/miniapp-sdk'
+import { usePathname } from 'next/navigation'
 import {
   Globe,
   Sparkles,
@@ -13,6 +14,10 @@ import {
   Repeat2,
   Heart,
   Share,
+  Check,
+  FileText,
+  Languages,
+  Send,
 } from 'lucide-react'
 import { LANGUAGES, Language, TranslationResult, RecentActivity } from '@/lib/types'
 import { getTranslation, getLanguageName } from '@/lib/i18n'
@@ -64,6 +69,8 @@ const detectLanguage = (text: string): Language | null => {
 
 export default function Home() {
   const { uiLanguage } = useUiLanguage()
+  const pathname = usePathname()
+  const [currentStep, setCurrentStep] = useState<'input' | 'languages' | 'posting'>('input')
   const [inputMode, setInputMode] = useState<'manual' | 'ai'>('manual')
   const [originalText, setOriginalText] = useState('')
   const [topic, setTopic] = useState('')
@@ -112,16 +119,33 @@ export default function Home() {
         setDisplayName(user.displayName || '')
         setFid(user.fid)
 
-        await fetch('/api/user/init', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fid: user.fid,
-            username: user.username,
-            displayName: user.displayName,
-            pfpUrl: user.pfpUrl,
-          }),
-        })
+        try {
+          const initResponse = await fetch('/api/user/init', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fid: user.fid,
+              username: user.username,
+              displayName: user.displayName,
+              pfpUrl: user.pfpUrl,
+            }),
+          })
+
+          if (!initResponse.ok) {
+            console.warn('/api/user/init HTTP error:', initResponse.status)
+            return
+          }
+
+          const contentType = initResponse.headers.get('content-type')
+          if (contentType && contentType.includes('application/json')) {
+            const initData = await initResponse.json()
+            if (!initData.ok) {
+              console.warn('/api/user/init error:', initData.error)
+            }
+          }
+        } catch (initError) {
+          console.warn('Failed to initialize user:', initError)
+        }
 
         try {
           await sdk.actions.ready()
@@ -134,6 +158,38 @@ export default function Home() {
     }
 
     initMiniAppUser()
+  }, [])
+
+  // Reset function
+  const resetToHome = () => {
+    setCurrentStep('input')
+    setOriginalText('')
+    setTopic('')
+    setSelectedLanguages([])
+    setImageUrl('')
+    setFileName('')
+    setTranslations({})
+    setEditableTranslations({})
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Reset to input step and clear input when navigating to home page
+  useEffect(() => {
+    if (pathname === '/') {
+      resetToHome()
+    }
+  }, [pathname])
+
+  // Listen for custom event to reset when logo is clicked on same page
+  useEffect(() => {
+    const handleResetToHome = () => {
+      resetToHome()
+    }
+
+    window.addEventListener('resetToHome', handleResetToHome)
+    return () => {
+      window.removeEventListener('resetToHome', handleResetToHome)
+    }
   }, [])
 
   useEffect(() => {
@@ -165,6 +221,17 @@ export default function Home() {
         }),
       })
 
+      if (!res.ok) {
+        console.error('/api/sessions/create HTTP error:', res.status, res.statusText)
+        return null
+      }
+
+      const contentType = res.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('/api/sessions/create: Response is not JSON')
+        return null
+      }
+
       const json = await res.json()
       if (!json.ok) {
         console.error('/api/sessions/create error:', json.error)
@@ -194,15 +261,33 @@ export default function Home() {
         body: JSON.stringify({ topic, style: 'casual' }),
       })
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Response is not JSON')
+      }
+
       const data = await response.json()
       if (data.originalText) {
         setOriginalText(data.originalText)
+        // 텍스트 생성 완료 후 언어 선택 단계로 이동
+        setCurrentStep('languages')
       }
     } catch (error) {
       console.error('Generate error:', error)
       alert('Failed to generate text. Please try again.')
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  // 텍스트 입력 완료 후 다음 단계로 이동
+  const handleContinueToLanguages = () => {
+    if (originalText.trim()) {
+      setCurrentStep('languages')
     }
   }
 
@@ -231,8 +316,17 @@ export default function Home() {
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Upload failed')
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            const errorData = await response.json()
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`)
+          } catch (parseError) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
       }
 
       const data = await response.json()
@@ -268,6 +362,15 @@ export default function Home() {
         }),
       })
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Response is not JSON')
+      }
+
       const data = await response.json()
       if (data.translations) {
         setTranslations(data.translations)
@@ -301,6 +404,9 @@ export default function Home() {
             console.error('Failed to save translations:', e)
           }
         }
+
+        // 번역 완료 후 포스팅 단계로 이동
+        setCurrentStep('posting')
       }
     } catch (error) {
       console.error('Translate error:', error)
@@ -473,119 +579,521 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <main className="flex-1 max-w-3xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-6">
-        {/* Original Text Section */}
-        <div className={`${sectionCardClass} mb-6`}>
-          <div className="flex gap-2 mb-4">
-            <button
-              onClick={() => setInputMode('manual')}
-              className={`flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium transition-all text-sm sm:text-base ${
-                inputMode === 'manual'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {t.directInput}
-            </button>
-            <button
-              onClick={() => setInputMode('ai')}
-              className={`flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium transition-all text-sm sm:text-base ${
-                inputMode === 'ai'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <Sparkles className="inline w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-              {t.aiGenerate}
-            </button>
-          </div>
+        {/* Step Indicator */}
+        <div className="mb-6">
+          {/* Full Step Indicator - All Screens */}
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-center gap-2 sm:gap-3">
+              {/* Step 1 */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative">
+                  <div
+                    className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
+                      currentStep === 'input'
+                        ? 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed] text-white shadow-lg shadow-[#9333ea]/30 scale-110'
+                        : currentStep === 'languages' || currentStep === 'posting'
+                        ? 'bg-gradient-to-br from-[#a855f7] to-[#9333ea] text-white shadow-md scale-105'
+                        : 'bg-gray-200 text-gray-500 scale-100'
+                    }`}
+                  >
+                    {currentStep === 'languages' || currentStep === 'posting' ? (
+                      <Check className="w-5 h-5 sm:w-6 sm:h-6" />
+                    ) : (
+                      <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
+                    )}
+                  </div>
+                </div>
+                <span
+                  className={`text-[17px] font-medium transition-all duration-300 text-center ${
+                    currentStep === 'input'
+                      ? 'bg-gradient-to-r from-[#9333ea] to-[#a855f7] bg-clip-text text-transparent font-semibold'
+                      : currentStep === 'languages' || currentStep === 'posting'
+                      ? 'text-[#9333ea] font-semibold'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  {t.step1Input}
+                </span>
+              </div>
 
-          {inputMode === 'manual' ? (
-            <div>
-              <textarea
-                value={originalText}
-                onChange={(e) => setOriginalText(e.target.value)}
-                placeholder={t.placeholder}
-                className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm sm:text-base"
-                rows={5}
-              />
-              <div className="mt-2 text-sm text-gray-500">
-                {originalText.length} {t.chars}
+              {/* Connector Line */}
+              <div className="relative flex-1 max-w-[60px] sm:max-w-[80px]">
+                <div className="h-0.5 sm:h-1 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-500 ease-in-out ${
+                      currentStep === 'languages' || currentStep === 'posting'
+                        ? 'bg-gradient-to-r from-[#9333ea] via-[#a855f7] to-[#60a5fa] w-full'
+                        : 'w-0'
+                    }`}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative">
+                  <div
+                    className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
+                      currentStep === 'languages'
+                        ? 'bg-gradient-to-br from-[#a855f7] to-[#60a5fa] text-white shadow-lg shadow-[#a855f7]/30 scale-110'
+                        : currentStep === 'posting'
+                        ? 'bg-gradient-to-br from-[#a855f7] to-[#9333ea] text-white shadow-md scale-105'
+                        : 'bg-gray-200 text-gray-500 scale-100'
+                    }`}
+                  >
+                    {currentStep === 'posting' ? (
+                      <Check className="w-5 h-5 sm:w-6 sm:h-6" />
+                    ) : (
+                      <Languages className="w-5 h-5 sm:w-6 sm:h-6" />
+                    )}
+                  </div>
+                </div>
+                <span
+                  className={`text-[17px] font-medium transition-all duration-300 text-center ${
+                    currentStep === 'languages'
+                      ? 'bg-gradient-to-r from-[#a855f7] to-[#60a5fa] bg-clip-text text-transparent font-semibold'
+                      : currentStep === 'posting'
+                      ? 'text-[#a855f7] font-semibold'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  {t.step2Language}
+                </span>
+              </div>
+
+              {/* Connector Line */}
+              <div className="relative flex-1 max-w-[60px] sm:max-w-[80px]">
+                <div className="h-0.5 sm:h-1 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-500 ease-in-out ${
+                      currentStep === 'posting'
+                        ? 'bg-gradient-to-r from-[#a855f7] via-[#60a5fa] to-[#3b82f6] w-full'
+                        : 'w-0'
+                    }`}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative">
+                  <div
+                    className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-semibold text-sm sm:text-lg transition-all duration-300 ${
+                      currentStep === 'posting'
+                        ? 'bg-gradient-to-br from-[#60a5fa] to-[#3b82f6] text-white shadow-lg shadow-[#60a5fa]/30 scale-110'
+                        : 'bg-gray-200 text-gray-500 scale-100'
+                    }`}
+                  >
+                    <Send className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                </div>
+                <span
+                  className={`text-[17px] font-medium transition-all duration-300 text-center ${
+                    currentStep === 'posting'
+                      ? 'bg-gradient-to-r from-[#60a5fa] to-[#3b82f6] bg-clip-text text-transparent font-semibold'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  {t.step3Posting}
+                </span>
               </div>
             </div>
-          ) : (
-            <div>
-              <input
-                type="text"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                placeholder={t.describeTopic}
-                className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent mb-3 text-sm sm:text-base"
-              />
+          </div>
+        </div>
+
+        {/* Step 1: Input Mode & Text Input */}
+        {currentStep === 'input' && (
+          <div className={`${sectionCardClass} mb-6`}>
+            <div className="flex gap-2 mb-4">
               <button
-                onClick={handleGenerateOriginal}
-                disabled={isGenerating || !topic.trim()}
-                className="w-full py-2.5 sm:py-3 rounded-lg font-medium flex items-center justify-center gap-2 bg-purple-600 text-white hover:bg-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                onClick={() => setInputMode('manual')}
+                className={`flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium transition-all text-sm sm:text-base ${
+                  inputMode === 'manual'
+                    ? 'bg-[#9333ea] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
               >
-                {isGenerating ? (
+                {t.directInput}
+              </button>
+              <button
+                onClick={() => setInputMode('ai')}
+                className={`flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium transition-all text-sm sm:text-base ${
+                  inputMode === 'ai'
+                    ? 'bg-[#9333ea] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <Sparkles className="inline w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                {t.aiGenerate}
+              </button>
+            </div>
+
+            {inputMode === 'manual' ? (
+              <div>
+                <textarea
+                  value={originalText}
+                  onChange={(e) => setOriginalText(e.target.value)}
+                  placeholder={t.placeholder}
+                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#a855f7] focus:border-transparent resize-none text-sm sm:text-base"
+                  rows={5}
+                />
+                <div className="mt-2 text-sm text-gray-500">
+                  {originalText.length} {t.chars}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  placeholder={t.describeTopic}
+                  className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#a855f7] focus:border-transparent mb-3 text-sm sm:text-base"
+                />
+                <button
+                  onClick={handleGenerateOriginal}
+                  disabled={isGenerating || !topic.trim()}
+                  className="w-full py-2.5 sm:py-3 rounded-lg font-medium flex items-center justify-center gap-2 bg-[#9333ea] text-white hover:bg-[#a855f7] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 sm:w-5 h-5 sm:h-5 animate-spin" />
+                      {t.generating}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+                      {t.generate}
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+
+            {/* Image Upload */}
+            <div className="mt-4">
+              <h3 className="font-semibold mb-2 flex items-center gap-2 text-sm sm:text-base">
+                <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
+                {t.addVisual} ({t.optional})
+              </h3>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/jpg"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="image-upload"
+              />
+              <label
+                htmlFor="image-upload"
+                className="block w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-gray-400 transition-colors text-xs sm:text-sm"
+              >
+                {isUploading ? (
+                  <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin mx-auto" />
+                ) : imageUrl ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-xs sm:text-sm truncate max-w-full">{fileName}</span>
+                  </div>
+                ) : (
+                  <span className="text-gray-600">{t.clickToUpload}</span>
+                )}
+              </label>
+              {imageUrl && (
+                <div className="mt-2 flex justify-center">
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    className="rounded-lg max-h-20 w-auto object-contain border border-gray-200"
+                    onError={(e) => {
+                      console.error('Image load error:', imageUrl)
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Continue Button */}
+            {originalText.trim() && (
+              <div className="mt-6">
+                <button
+                  onClick={handleContinueToLanguages}
+                  className="w-full py-3 sm:py-4 bg-[#9333ea] text-white rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg hover:bg-[#a855f7] transition-colors flex items-center justify-center gap-2"
+                >
+                  <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <span className="text-sm sm:text-base">{t.nextLanguageSelection}</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step 2: Language Selection */}
+        {currentStep === 'languages' && (
+          <div className="space-y-6">
+            {/* Back Button */}
+            <button
+              onClick={() => setCurrentStep('input')}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors text-sm"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              뒤로
+            </button>
+
+            {/* Language Selection */}
+            <div className={`${sectionCardClass}`}>
+              <h3 className="font-semibold mb-4 text-sm sm:text-base"> {t.whereTravel}</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
+                {Object.entries(LANGUAGES).map(([code, lang]) => {
+                  const langCode = code as Language
+                  const isSelected = selectedLanguages.includes(langCode)
+                  const isInPreview = !!translations[langCode] || originalLang === langCode
+                  const tooltip = isInPreview
+                    ? originalLang === langCode
+                      ? 'Detected as original language'
+                      : 'Already in preview'
+                    : undefined
+
+                  return (
+                    <button
+                      key={code}
+                      onClick={() => !isInPreview && toggleLanguage(langCode)}
+                      disabled={isInPreview}
+                      aria-disabled={isInPreview}
+                      title={tooltip}
+                      className={`py-2 px-2 sm:px-3 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
+                        isInPreview
+                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                          : isSelected
+                          ? 'bg-[#9333ea] text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <span className="mr-1">{lang.flag}</span>
+                      {getLanguageName(uiLanguage, code as Language)}
+                    </button>
+                  )
+                })}
+              </div>
+              <button
+                onClick={handleTranslate}
+                disabled={isTranslating || !originalText.trim() || selectedLanguages.length === 0}
+                className="w-full py-3 sm:py-4 bg-[#9333ea] text-white rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg hover:bg-[#a855f7] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isTranslating ? (
                   <>
-                    <Loader2 className="w-4 h-4 sm:w-5 h-5 sm:h-5 animate-spin" />
-                    {t.generating}
+                    <Loader2 className="w-5 h-5 sm:w-6 h-6 sm:h-6 animate-spin" />
+                    <span className="text-sm sm:text-base">{t.craftingMessage}</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-                    {t.generate}
+                    <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <span className="text-sm sm:text-base">{t.translate}</span>
                   </>
                 )}
               </button>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Image Upload */}
-          <div className="mt-4">
-            <h3 className="font-semibold mb-2 flex items-center gap-2 text-sm sm:text-base">
-              <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
-              {t.addVisual} ({t.optional})
-            </h3>
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/jpg"
-              onChange={handleImageUpload}
-              className="hidden"
-              id="image-upload"
-            />
-            <label
-              htmlFor="image-upload"
-              className="block w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-gray-400 transition-colors text-xs sm:text-sm"
+        {/* Step 3: Posting Screen */}
+        {currentStep === 'posting' && (
+          <div className="space-y-6">
+            {/* Back Button */}
+            <button
+              onClick={() => setCurrentStep('languages')}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors text-sm"
             >
-              {isUploading ? (
-                <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin mx-auto" />
-              ) : imageUrl ? (
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-xs sm:text-sm truncate max-w-full">{fileName}</span>
-                </div>
-              ) : (
-                <span className="text-gray-600">{t.clickToUpload}</span>
-              )}
-            </label>
-            {imageUrl && (
-              <div className="mt-2 flex justify-center">
-                <img
-                  src={imageUrl}
-                  alt="Preview"
-                  className="rounded-lg max-h-20 w-auto object-contain border border-gray-200"
-                  onError={(e) => {
-                    console.error('Image load error:', imageUrl)
-                    e.currentTarget.style.display = 'none'
-                  }}
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
                 />
+              </svg>
+              뒤로
+            </button>
+
+            <h2 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">
+              {t.yourGlobalMessage}
+            </h2>
+
+            {/* Original Text Posting Option */}
+            <div className={sectionCardClass}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                  <span className="text-xl sm:text-2xl"></span>
+                  <span>원문 (Original)</span>
+                </h3>
+              </div>
+
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <div className="p-4 sm:p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                    <div className="min-w-0">
+                      <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                        {userName || 'Anonymous'}
+                      </div>
+                      <div className="text-xs sm:text-sm text-gray-500 truncate">
+                        {displayName || ''}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-sm sm:text-base text-gray-900 whitespace-pre-wrap">
+                    {originalText}
+                  </div>
+
+                  {imageUrl && (
+                    <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
+                      <img
+                        src={imageUrl}
+                        alt="Preview media"
+                        className="w-full max-h-80 object-cover bg-gray-100"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
+                    <div className="flex items-center gap-12">
+                      <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                        <MessageCircle className="w-5 h-5" />
+                      </button>
+                      <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                        <Repeat2 className="w-5 h-5" />
+                      </button>
+                      <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                        <Heart className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                      <Share className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={handlePostOriginal}
+                  className="flex-1 py-2 px-3 sm:px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
+                >
+                  ✉️ {t.postNow}
+                </button>
+              </div>
+            </div>
+
+            {/* Translation Results */}
+            {Object.keys(translations).length > 0 && (
+              <div className="space-y-4 mb-6">
+                {selectedLanguages.map((lang) => {
+                  const translation = displayTranslations[lang]
+                  if (!translation) return null
+
+                  const editableText = editableTranslations[lang] || translation.text
+
+                  return (
+                    <div key={lang} className={sectionCardClass}>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                          <span className="text-xl sm:text-2xl">{LANGUAGES[lang].flag}</span>
+                          <span className="truncate">{LANGUAGES[lang].name}</span>
+                        </h3>
+                        <button
+                          onClick={() => handleDeleteCard(lang)}
+                          className="text-gray-400 hover:text-red-500 transition-colors shrink-0 ml-2"
+                        >
+                          <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </button>
+                      </div>
+
+                      <div className="border border-gray-200 rounded-xl overflow-hidden">
+                        <div className="p-4 sm:p-5">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                            <div className="min-w-0">
+                              <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                                Username
+                              </div>
+                              <div className="text-xs sm:text-sm text-gray-500 truncate">
+                                @UserTag
+                              </div>
+                            </div>
+                          </div>
+
+                          <textarea
+                            value={editableText}
+                            onChange={(e) => {
+                              setEditableTranslations((prev) => ({
+                                ...prev,
+                                [lang]: e.target.value,
+                              }))
+                            }}
+                            className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none"
+                            rows={3}
+                          />
+
+                          {imageUrl && (
+                            <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
+                              <img
+                                src={imageUrl}
+                                alt="Preview media"
+                                className="w-full max-h-80 object-cover bg-gray-100"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                }}
+                              />
+                            </div>
+                          )}
+
+                          <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
+                            <div className="flex items-center gap-12">
+                              <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                <MessageCircle className="w-5 h-5" />
+                              </button>
+                              <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                <Repeat2 className="w-5 h-5" />
+                              </button>
+                              <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                <Heart className="w-5 h-5" />
+                              </button>
+                            </div>
+                            <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                              <Share className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handlePost(lang)}
+                          className="flex-1 mt-4 py-2 px-3 sm:px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
+                        >
+                          {t.postNow}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Preview */}
-        <div className={`${sectionCardClass} mb-6`}>
+        {/* Preview Section - Always shown at bottom */}
+        <div className={`${sectionCardClass} mt-6`}>
           <h3 className="font-semibold mb-3 flex items-center gap-2 text-sm sm:text-base">
             <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
             {t.preview}
@@ -604,13 +1112,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <textarea
-                value={originalText}
-                onChange={(e) => setOriginalText(e.target.value)}
-                placeholder={t.placeholder}
-                className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none"
-                rows={3}
-              />
+              <div className="text-sm sm:text-base text-gray-900 whitespace-pre-wrap min-h-[60px]">
+                {originalText || <span className="text-gray-400 italic">{t.placeholder}</span>}
+              </div>
 
               {imageUrl && (
                 <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
@@ -643,167 +1147,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={handlePostOriginal}
-              className="flex-1 py-2 px-3 sm:px-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-500 transition-colors text-sm sm:text-base"
-            >
-              📤 {t.postNow}
-            </button>
-          </div>
         </div>
-
-        {/* Language Selection */}
-        <div className={`${sectionCardClass} mb-6`}>
-          <h3 className="font-semibold mb-4 text-sm sm:text-base">🌍 {t.whereTravel}</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
-            {Object.entries(LANGUAGES).map(([code, lang]) => {
-              const langCode = code as Language
-              const isSelected = selectedLanguages.includes(langCode)
-              const isInPreview = !!translations[langCode] || originalLang === langCode
-              const tooltip = isInPreview
-                ? originalLang === langCode
-                  ? 'Detected as original language'
-                  : 'Already in preview'
-                : undefined
-
-              return (
-                <button
-                  key={code}
-                  onClick={() => !isInPreview && toggleLanguage(langCode)}
-                  disabled={isInPreview}
-                  aria-disabled={isInPreview}
-                  title={tooltip}
-                  className={`py-2 px-2 sm:px-3 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
-                    isInPreview
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : isSelected
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  <span className="mr-1">{lang.flag}</span>
-                  {getLanguageName(uiLanguage, code as Language)}
-                </button>
-              )
-            })}
-          </div>
-          <button
-            onClick={handleTranslate}
-            disabled={isTranslating || !originalText.trim() || selectedLanguages.length === 0}
-            className="w-full py-3 sm:py-4 bg-purple-600 text-white rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg hover:bg-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 "
-          >
-            {isTranslating ? (
-              <>
-                <Loader2 className="w-5 h-5 sm:w-6 h-6 sm:h-6 animate-spin" />
-                <span className="text-sm sm:text-base">{t.craftingMessage}</span>
-              </>
-            ) : (
-              <>
-                <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="text-sm sm:text-base">{t.translate}</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Translation Results */}
-        {Object.keys(translations).length > 0 && (
-          <div className="space-y-4 mb-6">
-            <h2 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">
-              {t.yourGlobalMessage}
-            </h2>
-            {selectedLanguages.map((lang) => {
-              const translation = displayTranslations[lang]
-              if (!translation) return null
-
-              const editableText = editableTranslations[lang] || translation.text
-
-              return (
-                <div key={lang} className={sectionCardClass}>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
-                      <span className="text-xl sm:text-2xl">{LANGUAGES[lang].flag}</span>
-                      <span className="truncate">{LANGUAGES[lang].name}</span>
-                    </h3>
-                    <button
-                      onClick={() => handleDeleteCard(lang)}
-                      className="text-gray-400 hover:text-red-500 transition-colors shrink-0 ml-2"
-                    >
-                      <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </button>
-                  </div>
-
-                  <div className="border border-gray-200 rounded-xl overflow-hidden">
-                    <div className="p-4 sm:p-5">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
-                        <div className="min-w-0">
-                          <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
-                            Username
-                          </div>
-                          <div className="text-xs sm:text-sm text-gray-500 truncate">@UserTag</div>
-                        </div>
-                      </div>
-
-                      <textarea
-                        value={editableText}
-                        onChange={(e) => {
-                          setEditableTranslations((prev) => ({
-                            ...prev,
-                            [lang]: e.target.value,
-                          }))
-                        }}
-                        className="w-full p-0 border-0 resize-none text-sm sm:text-base text-gray-900 bg-transparent focus:outline-none"
-                        rows={3}
-                      />
-
-                      {imageUrl && (
-                        <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
-                          <img
-                            src={imageUrl}
-                            alt="Preview media"
-                            className="w-full max-h-80 object-cover bg-gray-100"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none'
-                            }}
-                          />
-                        </div>
-                      )}
-
-                      <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
-                        <div className="flex items-center gap-12">
-                          <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                            <MessageCircle className="w-5 h-5" />
-                          </button>
-                          <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                            <Repeat2 className="w-5 h-5" />
-                          </button>
-                          <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                            <Heart className="w-5 h-5" />
-                          </button>
-                        </div>
-                        <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                          <Share className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handlePost(lang)}
-                      className="flex-1 mt-4 py-2 px-3 sm:px-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-500 transition-colors text-sm sm:text-base"
-                    >
-                      📤 {t.postNow}
-                    </button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
       </main>
       <Footer />
     </div>
