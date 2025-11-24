@@ -103,9 +103,12 @@ export default function Home() {
   // Mini App 추가 진행 상태
   const [isAddingMiniApp, setIsAddingMiniApp] = useState(false)
 
-  const [activeLang, setActiveLang] = useState<Language | null>(null)
+  // Posting step UI 상태
   const [isCombineMode, setIsCombineMode] = useState(false)
-  const [combinedSelection, setCombinedSelection] = useState<Language[]>([])
+  // Step3에서 실제로 보여줄 / 포스트할 언어 목록
+  const [postLanguages, setPostLanguages] = useState<Language[]>([])
+  // 합치기 모드에서 원문 포함 여부
+  const [includeOriginalInCombined, setIncludeOriginalInCombined] = useState(false)
 
   const t = getTranslation(uiLanguage)
 
@@ -235,6 +238,9 @@ export default function Home() {
     setFileName('')
     setTranslations({})
     setEditableTranslations({})
+    setIsCombineMode(false)
+    setPostLanguages([])
+    setIncludeOriginalInCombined(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -276,6 +282,9 @@ export default function Home() {
     if (originalText.trim() && Object.keys(translations).length > 0) {
       setTranslations({})
       setEditableTranslations({})
+      setIsCombineMode(false)
+      setPostLanguages([])
+      setIncludeOriginalInCombined(false)
       // setSessionId(null) // 필요하면 세션도 리셋
     }
   }, [originalText])
@@ -477,6 +486,11 @@ export default function Home() {
           newEditable[lang] = data.translations[lang]?.text || ''
         })
         setEditableTranslations(newEditable)
+
+        // Step3 초기 상태
+        setPostLanguages(selectedLanguages)
+        setIsCombineMode(false)
+        setIncludeOriginalInCombined(false)
 
         // 2) 번역 결과를 Supabase polycast_translations에 저장
         if (effectiveSessionId) {
@@ -682,6 +696,7 @@ export default function Home() {
 
   const handleDeleteCard = (lang: Language) => {
     setSelectedLanguages(selectedLanguages.filter((l) => l !== lang))
+    setPostLanguages((prev) => prev.filter((l) => l !== lang))
     setEditableTranslations((prev) => {
       const newPrev = { ...prev }
       delete newPrev[lang]
@@ -697,42 +712,40 @@ export default function Home() {
     }
   }
 
-  const toggleCombinedLang = (lang: Language) => {
-    setCombinedSelection((prev) =>
+  // Step3에서 보여줄 언어 토글
+  const togglePostLanguage = (lang: Language) => {
+    setPostLanguages((prev) =>
       prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
     )
   }
 
-  // 선택된 언어들을 한 캐스트 텍스트로 합쳐주는 헬퍼
+  // 합치기 모드에서 최종 텍스트 빌드
   const buildCombinedText = (): string => {
-    const langs = combinedSelection.length > 0 ? combinedSelection : selectedLanguages
+    const blocks: string[] = []
 
-    const validLangs = langs.filter(
-      (lang) => translations[lang] && (editableTranslations[lang] || translations[lang]?.text),
-    )
+    if (includeOriginalInCombined && originalText.trim()) {
+      blocks.push(originalText.trim())
+    }
 
-    if (validLangs.length === 0) return ''
-
-    const blocks = validLangs.map((lang) => {
-      const text = editableTranslations[lang] || translations[lang]!.text
-      // 예시처럼 안녕\nhi\nbonjour 형태로, 언어 정보 없이 텍스트만 합치기
-      return text
+    postLanguages.forEach((lang) => {
+      const raw = editableTranslations[lang] || translations[lang]?.text
+      if (raw && raw.trim()) {
+        blocks.push(raw.trim())
+      }
     })
 
-    // 언어 사이를 한 줄씩만 띄움
-    return blocks.join('\n')
+    return blocks.join('\n\n')
   }
 
-  // 여러 언어를 한 캐스트로 합쳐서 보내기
+  // 여러 언어를 한 캐스트로 합쳐서 포스팅
   const handlePostCombined = async () => {
+    const finalText = buildCombinedText()
+    if (!finalText.trim()) return
+
     if (!isInMiniApp) {
       alert('Cast는 Farcaster/Base Mini App 안에서만 보낼 수 있어요.')
       return
     }
-
-    const langs = combinedSelection.length > 0 ? combinedSelection : selectedLanguages
-    const finalText = buildCombinedText()
-    if (!finalText.trim()) return
 
     try {
       const canCompose = capabilities.includes('actions.composeCast')
@@ -747,8 +760,7 @@ export default function Home() {
         await sdk.actions.openUrl({ url })
       }
 
-      // 로그 기록 (첫번째 언어 기준)
-      const targetLangForLog = langs[0] ?? originalLang ?? 'en'
+      const targetLangForLog = postLanguages[0] ?? originalLang ?? 'en'
 
       try {
         if (fid) {
@@ -776,7 +788,7 @@ export default function Home() {
       alert('Failed to open composer. Please try again.')
 
       try {
-        const targetLangForLog = langs[0] ?? originalLang ?? 'en'
+        const targetLangForLog = postLanguages[0] ?? originalLang ?? 'en'
         if (fid) {
           await fetch('/api/log-cast', {
             method: 'POST',
@@ -1159,7 +1171,7 @@ export default function Home() {
             <div className={sectionCardClass}>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
-                  <span className="text-xl sm:text-2xl"></span>
+                  <span className="text-xl sm:text-2xl">📝</span>
                   <span>{t.original}</span>
                 </h3>
               </div>
@@ -1224,50 +1236,38 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Translation Results - Tab + Combine Mode */}
+            {/* Translation Results */}
             {Object.keys(translations).length > 0 && (
               <div className={sectionCardClass}>
-                {/* 상단: 라벨 + 합치기 모드 토글 */}
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-gray-500">번역 언어 선택</span>
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="font-semibold text-sm sm:text-base">번역 결과</h3>
                   <button
                     type="button"
                     onClick={() => setIsCombineMode((prev) => !prev)}
-                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs sm:text-sm border transition-colors
-              ${
-                isCombineMode
-                  ? 'bg-[#f5f3ff] border-[#9333ea] text-[#4c1d95]'
-                  : 'bg-gray-100 border-gray-200 text-gray-600'
-              }`}
+                    className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                      isCombineMode
+                        ? 'bg-[#9333ea] text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
                   >
-                    {isCombineMode ? '합치기 모드 ON' : '합치기 모드 OFF'}
+                    {isCombineMode ? '✓ 합치기 모드' : '합치기 모드'}
                   </button>
                 </div>
 
-                {/* 언어 탭 */}
-                <div className="flex flex-wrap gap-2 mb-4">
+                {/* 언어 선택 버튼들 - Step2에서 고른 언어 중 실제로 포스트에 쓸 언어들 */}
+                <div className="mb-4 flex flex-wrap gap-2">
                   {selectedLanguages.map((lang) => {
-                    const isActive = activeLang === lang
-                    const isCombined = combinedSelection.includes(lang)
-
+                    const isSelected = postLanguages.includes(lang)
                     return (
                       <button
                         key={lang}
                         type="button"
-                        onClick={() => {
-                          if (isCombineMode) {
-                            toggleCombinedLang(lang)
-                          }
-                          setActiveLang(lang)
-                        }}
-                        className={`px-4 py-2 rounded-2xl border-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-all
-                  ${
-                    isActive
-                      ? 'border-[#9333ea] bg-[#f5f3ff] text-[#4c1d95]'
-                      : 'border-transparent bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }
-                  ${isCombineMode && isCombined ? 'ring-2 ring-[#a855f7]/60' : ''}
-                `}
+                        onClick={() => togglePostLanguage(lang)}
+                        className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                          isSelected
+                            ? 'bg-[#9333ea] text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
                       >
                         <span className="mr-1">{LANGUAGES[lang].flag}</span>
                         {getLanguageName(uiLanguage, lang)}
@@ -1276,126 +1276,185 @@ export default function Home() {
                   })}
                 </div>
 
-                {/* 아래 큰 카드: 선택된 언어 하나만 표시 */}
-                {activeLang &&
-                  selectedLanguages.includes(activeLang) &&
-                  translations[activeLang] && (
-                    <>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
-                          <span className="text-xl sm:text-2xl">{LANGUAGES[activeLang].flag}</span>
-                          <span className="truncate">
-                            {getLanguageName(uiLanguage, activeLang as Language)}
-                          </span>
-                        </h3>
-                        <button
-                          onClick={() => handleDeleteCard(activeLang)}
-                          className="text-gray-400 hover:text-red-500 transition-colors shrink-0 ml-2"
-                        >
-                          <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                        </button>
-                      </div>
+                {/* 합치기 모드 */}
+                {isCombineMode ? (
+                  <div className="space-y-4">
+                    {/* 원문 포함 토글 */}
+                    <button
+                      type="button"
+                      onClick={() => setIncludeOriginalInCombined((prev) => !prev)}
+                      className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                        includeOriginalInCombined
+                          ? 'bg-[#9333ea] text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <span className="mr-1">📝</span>
+                      원문 포함하기
+                    </button>
 
-                      <div className="border border-gray-200 rounded-xl overflow-hidden">
-                        <div className="p-4 sm:p-5">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
-                            <div className="min-w-0">
-                              <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
-                                {userName || 'Anonymous'}
+                    {postLanguages.length === 0 && !includeOriginalInCombined ? (
+                      <div className="text-center py-8 text-gray-500 text-sm">
+                        합칠 언어를 선택해주세요
+                      </div>
+                    ) : (
+                      <>
+                        {/* 미리보기 카드 */}
+                        <div className="border border-gray-200 rounded-xl overflow-hidden">
+                          <div className="p-4 sm:p-5">
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                              <div className="min-w-0">
+                                <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                                  {userName || 'Anonymous'}
+                                </div>
+                                <div className="text-xs sm:text-sm text-gray-500 truncate">
+                                  @{displayName || ''}
+                                </div>
                               </div>
-                              <div className="text-xs sm:text-sm text-gray-500 truncate">
-                                @{displayName || ''}
+                            </div>
+
+                            <div className="text-sm sm:text-base text-gray-900 whitespace-pre-wrap">
+                              {buildCombinedText()}
+                            </div>
+
+                            {imageUrl && (
+                              <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
+                                <img
+                                  src={imageUrl}
+                                  alt="Preview media"
+                                  className="w-full max-h-80 object-cover bg-gray-100"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none'
+                                  }}
+                                />
                               </div>
+                            )}
+
+                            <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
+                              <div className="flex items-center gap-12">
+                                <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                  <MessageCircle className="w-5 h-5" />
+                                </button>
+                                <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                  <Repeat2 className="w-5 h-5" />
+                                </button>
+                                <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                  <Heart className="w-5 h-5" />
+                                </button>
+                              </div>
+                              <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                <Share className="w-5 h-5" />
+                              </button>
                             </div>
                           </div>
+                        </div>
 
-                          <textarea
-                            value={
-                              editableTranslations[activeLang] || translations[activeLang].text
-                            }
-                            onChange={(e) => {
-                              const value = e.target.value
-                              setEditableTranslations((prev) => ({
-                                ...prev,
-                                [activeLang]: value,
-                              }))
-                            }}
-                            className="w-full p-0 border-0 resize-none text-base sm:text-base text-gray-900 bg-transparent focus:outline-none"
-                            rows={3}
-                          />
+                        <button
+                          onClick={handlePostCombined}
+                          className="w-full py-2.5 px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
+                        >
+                          ✉️ 한 번에 포스팅
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  // 개별 모드: 언어별 카드
+                  <div className="space-y-4">
+                    {postLanguages.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500 text-sm">
+                        보고 싶은 언어를 선택해주세요
+                      </div>
+                    ) : (
+                      postLanguages.map((lang) => {
+                        if (!translations[lang]) return null
 
-                          {imageUrl && (
-                            <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
-                              <img
-                                src={imageUrl}
-                                alt="Preview media"
-                                className="w-full max-h-80 object-cover bg-gray-100"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none'
-                                }}
-                              />
-                            </div>
-                          )}
-
-                          <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
-                            <div className="flex items-center gap-12">
-                              <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                                <MessageCircle className="w-5 h-5" />
-                              </button>
-                              <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                                <Repeat2 className="w-5 h-5" />
-                              </button>
-                              <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                                <Heart className="w-5 h-5" />
+                        return (
+                          <div key={lang} className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-medium flex items-center gap-2 text-sm sm:text-base">
+                                <span className="text-lg sm:text-xl">{LANGUAGES[lang].flag}</span>
+                                <span>{getLanguageName(uiLanguage, lang)}</span>
+                              </h4>
+                              <button
+                                onClick={() => handleDeleteCard(lang)}
+                                className="text-gray-400 hover:text-red-500 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
-                            <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
-                              <Share className="w-5 h-5" />
+
+                            <div className="border border-gray-200 rounded-xl overflow-hidden">
+                              <div className="p-4 sm:p-5">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                                  <div className="min-w-0">
+                                    <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                                      {userName || 'Anonymous'}
+                                    </div>
+                                    <div className="text-xs sm:text-sm text-gray-500 truncate">
+                                      @{displayName || ''}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <textarea
+                                  value={editableTranslations[lang] || translations[lang].text}
+                                  onChange={(e) => {
+                                    setEditableTranslations((prev) => ({
+                                      ...prev,
+                                      [lang]: e.target.value,
+                                    }))
+                                  }}
+                                  className="w-full p-0 border-0 resize-none text-base sm:text-base text-gray-900 bg-transparent focus:outline-none"
+                                  rows={3}
+                                />
+
+                                {imageUrl && (
+                                  <div className="mt-3 sm:mt-4 rounded-xl overflow-hidden border border-gray-200">
+                                    <img
+                                      src={imageUrl}
+                                      alt="Preview media"
+                                      className="w-full max-h-80 object-cover bg-gray-100"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none'
+                                      }}
+                                    />
+                                  </div>
+                                )}
+
+                                <div className="mt-3 sm:mt-4 flex items-center justify-between text-gray-500">
+                                  <div className="flex items-center gap-12">
+                                    <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                      <MessageCircle className="w-5 h-5" />
+                                    </button>
+                                    <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                      <Repeat2 className="w-5 h-5" />
+                                    </button>
+                                    <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                      <Heart className="w-5 h-5" />
+                                    </button>
+                                  </div>
+                                  <button className="flex items-center gap-2 hover:text-gray-700 transition-colors">
+                                    <Share className="w-5 h-5" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => handlePost(lang)}
+                              className="w-full py-2 px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
+                            >
+                              ✉️ {t.postNow}
                             </button>
                           </div>
-                        </div>
-                      </div>
-
-                      {/* 합치기 모드 미리보기 */}
-                      {isCombineMode && (
-                        <div className="mt-4">
-                          <h4 className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
-                            선택된 언어 합쳐진 미리보기
-                          </h4>
-                          <div className="border border-dashed border-[#c4b5fd] rounded-xl bg-[#f5f3ff]/40 p-3">
-                            <textarea
-                              readOnly
-                              className="w-full border-0 bg-transparent resize-none text-sm sm:text-base text-gray-900 focus:outline-none"
-                              rows={6}
-                              value={buildCombinedText()}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* 하단 버튼: 단일 언어 / 합치기 모드 */}
-                      <div className="flex flex-col sm:flex-row gap-2 mt-4">
-                        {/* 현재 언어만 캐스트 */}
-                        <button
-                          onClick={() => handlePost(activeLang)}
-                          className="flex-1 py-2 px-3 sm:px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
-                        >
-                          {t.postNow} (이 언어만)
-                        </button>
-
-                        {/* 합치기 모드일 때: 선택된 언어 모두 한 캐스트로 */}
-                        {isCombineMode && (
-                          <button
-                            onClick={handlePostCombined}
-                            className="flex-1 py-2 px-3 sm:px-4 bg-white text-[#4c1d95] border border-[#c4b5fd] rounded-lg font-medium hover:bg-[#f5f3ff] transition-colors text-xs sm:text-sm"
-                          >
-                            선택 언어 모두 한 캐스트로
-                          </button>
-                        )}
-                      </div>
-                    </>
-                  )}
+                        )
+                      })
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
