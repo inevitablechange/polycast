@@ -236,7 +236,7 @@ export default function Header() {
                     <div className="pt-2 flex justify-end">
                       <button
                         onClick={() => setIsWalletModalOpen(false)}
-                        className="px-3 py-1.5 text-xs rounded-md bg-purple-600 text-white hover:bg-purple-700"
+                        className="px-3 py-1.5 text-xs rounded-md bg-[#c4b5fd] text-black hover:bg-[#a78bfa]"
                       >
                         {t.walletModalClose}
                       </button>
@@ -265,7 +265,7 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium ${
                   pathname === '/'
-                    ? 'bg-purple-50 text-purple-600'
+                    ? 'bg-purple-50 text-[#a78bfa]'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -276,7 +276,7 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium ${
                   pathname === '/leaderboard'
-                    ? 'bg-purple-50 text-purple-600'
+                    ? 'bg-purple-50 text-[#a78bfa]'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -287,7 +287,7 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium ${
                   pathname === '/profile'
-                    ? 'bg-purple-50 text-purple-600'
+                    ? 'bg-purple-50 text-[#a78bfa]'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -298,7 +298,7 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium ${
                   pathname === '/settings'
-                    ? 'bg-purple-50 text-purple-600'
+                    ? 'bg-purple-50 text-[#a78bfa]'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >

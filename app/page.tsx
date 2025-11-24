@@ -18,6 +18,8 @@ import {
   FileText,
   Languages,
   Send,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react'
 import { LANGUAGES, Language, TranslationResult, RecentActivity } from '@/lib/types'
 import { getTranslation, getLanguageName } from '@/lib/i18n'
@@ -75,6 +77,8 @@ export default function Home() {
   const [inputMode, setInputMode] = useState<'manual' | 'ai'>('manual')
   const [originalText, setOriginalText] = useState('')
   const [topic, setTopic] = useState('')
+  const [tone, setTone] = useState<'professional' | 'friendly' | 'cryptoNative'>('friendly')
+  const [isToneAccordionOpen, setIsToneAccordionOpen] = useState(false)
   const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([])
   const [imageUrl, setImageUrl] = useState('')
   const [fileName, setFileName] = useState('')
@@ -87,10 +91,11 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState(false)
 
   const [miniAppUser, setMiniAppUser] = useState<MiniAppUser | null>(null)
+  const [isInMiniApp, setIsInMiniApp] = useState(false)
   const [userName, setUserName] = useState('')
   const [displayName, setDisplayName] = useState('')
-  const [isInMiniApp, setIsInMiniApp] = useState(false)
   const [fid, setFid] = useState<number | null>(null)
+  const [pfpUrl, setPfpUrl] = useState('')
   const [sessionId, setSessionId] = useState<number | null>(null)
   const [originalLang, setOriginalLang] = useState<Language | null>(null)
 
@@ -176,6 +181,7 @@ export default function Home() {
         setUserName(user.username || '')
         setDisplayName(user.displayName || '')
         setFid(user.fid)
+        setPfpUrl(user.pfpUrl || '')
 
         // Initialize user on backend
         try {
@@ -344,7 +350,7 @@ export default function Home() {
       const response = await fetch('/api/generate-original', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, style: 'casual' }),
+        body: JSON.stringify({ topic, tone }),
       })
 
       if (!response.ok) {
@@ -998,6 +1004,91 @@ export default function Home() {
                   className="w-full p-3 sm:p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-base sm:text-base min-h-5"
                   rows={6}
                 />
+
+                {/* Tone Selection Accordion */}
+                <div className="mt-3 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsToneAccordionOpen(!isToneAccordionOpen)}
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors"
+                  >
+                    <span>{t.toneSetting}</span>
+                    {isToneAccordionOpen ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  {isToneAccordionOpen && (
+                    <div className="mt-2 flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setTone('professional')}
+                        className={`flex-1 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                          tone === 'professional'
+                            ? 'bg-[#c4b5fd] text-black shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-center gap-2">
+                          <span className="text-lg">👔</span>
+                          <div className="flex flex-col items-start">
+                            <span className="font-semibold leading-tight">
+                              {t.toneProfessional}
+                            </span>
+                            <span className="text-xs opacity-80 leading-tight">
+                              {t.toneProfessionalDesc}
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setTone('friendly')}
+                        className={`flex-1 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                          tone === 'friendly'
+                            ? 'bg-[#c4b5fd] text-black shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-center gap-2">
+                          <span className="text-lg">☕</span>
+                          <div className="flex flex-col items-start">
+                            <span className="font-semibold leading-tight">{t.toneFriendly}</span>
+                            <span className="text-xs opacity-80 leading-tight">
+                              {t.toneFriendlyDesc}
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setTone('cryptoNative')}
+                        className={`flex-1 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                          tone === 'cryptoNative'
+                            ? 'bg-[#c4b5fd] text-black shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-center gap-2">
+                          <span className="text-lg">🔥</span>
+                          <div className="flex flex-col items-start">
+                            <span className="font-semibold leading-tight">
+                              {t.toneCryptoNative}
+                            </span>
+                            <span className="text-xs opacity-80 leading-tight">
+                              {t.toneCryptoNativeDesc}
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <button
                   onClick={handleGenerateOriginal}
                   disabled={isGenerating || !topic.trim()}
@@ -1117,7 +1208,7 @@ export default function Home() {
                         isInPreview
                           ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                           : isSelected
-                          ? 'bg-[#9333ea] text-white'
+                          ? 'bg-[#c4b5fd] text-black'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -1179,7 +1270,11 @@ export default function Home() {
               <div className="border border-gray-200 rounded-xl overflow-hidden">
                 <div className="p-4 sm:p-5">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                    {pfpUrl ? (
+                      <img src={pfpUrl} alt="Profile" className="w-16 h-16 rounded-full" />
+                    ) : (
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                    )}
                     <div className="min-w-0">
                       <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                         {userName || 'Anonymous'}
@@ -1240,40 +1335,42 @@ export default function Home() {
             {Object.keys(translations).length > 0 && (
               <div className={sectionCardClass}>
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-semibold text-sm sm:text-base">번역 결과</h3>
+                  <h3 className="font-semibold text-sm sm:text-base">{t.translationResults}</h3>
                   <button
                     type="button"
                     onClick={() => setIsCombineMode((prev) => !prev)}
                     className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                       isCombineMode
-                        ? 'bg-[#9333ea] text-white'
+                        ? 'bg-[#3b82f6] text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
-                    {isCombineMode ? '✓ 합치기 모드' : '합치기 모드'}
+                    {isCombineMode ? `✓ ${t.combineMode}` : t.combineMode}
                   </button>
                 </div>
 
                 {/* 언어 선택 버튼들 - Step2에서 고른 언어 중 실제로 포스트에 쓸 언어들 */}
                 <div className="mb-4 flex flex-wrap gap-2">
-                  {selectedLanguages.map((lang) => {
-                    const isSelected = postLanguages.includes(lang)
-                    return (
-                      <button
-                        key={lang}
-                        type="button"
-                        onClick={() => togglePostLanguage(lang)}
-                        className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
-                          isSelected
-                            ? 'bg-[#9333ea] text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        <span className="mr-1">{LANGUAGES[lang].flag}</span>
-                        {getLanguageName(uiLanguage, lang)}
-                      </button>
-                    )
-                  })}
+                  {selectedLanguages
+                    .filter((lang) => translations[lang]) // 번역 결과가 있는 언어만 표시
+                    .map((lang) => {
+                      const isSelected = postLanguages.includes(lang)
+                      return (
+                        <button
+                          key={lang}
+                          type="button"
+                          onClick={() => togglePostLanguage(lang)}
+                          className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                            isSelected
+                              ? 'bg-[#c4b5fd] text-black shadow-md'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          <span className="mr-1">{LANGUAGES[lang].flag}</span>
+                          {getLanguageName(uiLanguage, lang)}
+                        </button>
+                      )
+                    })}
                 </div>
 
                 {/* 합치기 모드 */}
@@ -1285,17 +1382,17 @@ export default function Home() {
                       onClick={() => setIncludeOriginalInCombined((prev) => !prev)}
                       className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
                         includeOriginalInCombined
-                          ? 'bg-[#9333ea] text-white shadow-md'
+                          ? 'bg-[#c4b5fd] text-black shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
                       <span className="mr-1">📝</span>
-                      원문 포함하기
+                      {t.includeOriginal}
                     </button>
 
                     {postLanguages.length === 0 && !includeOriginalInCombined ? (
                       <div className="text-center py-8 text-gray-500 text-sm">
-                        합칠 언어를 선택해주세요
+                        {t.selectLanguagesToCombine}
                       </div>
                     ) : (
                       <>
@@ -1303,7 +1400,15 @@ export default function Home() {
                         <div className="border border-gray-200 rounded-xl overflow-hidden">
                           <div className="p-4 sm:p-5">
                             <div className="flex items-center gap-3 mb-3">
-                              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                              {pfpUrl ? (
+                                <img
+                                  src={pfpUrl}
+                                  alt="Profile"
+                                  className="w-16 h-16 rounded-full"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                              )}
                               <div className="min-w-0">
                                 <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                                   {userName || 'Anonymous'}
@@ -1354,7 +1459,7 @@ export default function Home() {
                           onClick={handlePostCombined}
                           className="w-full py-2.5 px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
                         >
-                          ✉️ 한 번에 포스팅
+                          ✉️ {t.postAllAtOnce}
                         </button>
                       </>
                     )}
@@ -1364,7 +1469,7 @@ export default function Home() {
                   <div className="space-y-4">
                     {postLanguages.length === 0 ? (
                       <div className="text-center py-8 text-gray-500 text-sm">
-                        보고 싶은 언어를 선택해주세요
+                        {t.selectLanguagesToView}
                       </div>
                     ) : (
                       postLanguages.map((lang) => {
@@ -1470,7 +1575,11 @@ export default function Home() {
             <div className="border border-gray-200 rounded-xl overflow-hidden">
               <div className="p-4 sm:p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                  {pfpUrl ? (
+                    <img src={pfpUrl} alt="Profile" className="w-16 h-16 rounded-full" />
+                  ) : (
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                  )}
                   <div className="min-w-0">
                     <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                       {userName || 'Anonymous'}

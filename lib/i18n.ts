@@ -89,6 +89,23 @@ export const translations: Record<
     /** Common navigation */
     back: string
     original: string
+
+    /** Posting step */
+    translationResults: string
+    combineMode: string
+    includeOriginal: string
+    selectLanguagesToCombine: string
+    selectLanguagesToView: string
+    postAllAtOnce: string
+
+    /** Tone selection for AI Generate */
+    toneSetting: string
+    toneProfessional: string
+    toneFriendly: string
+    toneCryptoNative: string
+    toneProfessionalDesc: string
+    toneFriendlyDesc: string
+    toneCryptoNativeDesc: string
   }
 > = {
   /* -------------------------------------------------------------------------- */
@@ -186,6 +203,23 @@ The generated text will be auto-translated so you can publish in many languages 
     /** Common navigation */
     back: 'Back',
     original: 'Original',
+
+    /** Posting step */
+    translationResults: 'Translation Results',
+    combineMode: 'Combine Mode',
+    includeOriginal: 'Include Original',
+    selectLanguagesToCombine: 'Please select languages to combine',
+    selectLanguagesToView: 'Please select languages to view',
+    postAllAtOnce: 'Post All at Once',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'Tone Setting',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'Formal & Business',
+    toneFriendlyDesc: 'Casual & Warm',
+    toneCryptoNativeDesc: 'Degen & Hype',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -283,6 +317,23 @@ The generated text will be auto-translated so you can publish in many languages 
     /** Common navigation */
     back: '뒤로',
     original: '원문',
+
+    /** Posting step */
+    translationResults: '번역 결과',
+    combineMode: '합치기 모드',
+    includeOriginal: '원문 포함하기',
+    selectLanguagesToCombine: '합칠 언어를 선택해주세요',
+    selectLanguagesToView: '보고 싶은 언어를 선택해주세요',
+    postAllAtOnce: '한 번에 포스팅',
+
+    /** Tone selection for AI Generate */
+    toneSetting: '말투설정',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: '공식/비즈니스',
+    toneFriendlyDesc: '친근/에세이',
+    toneCryptoNativeDesc: 'Degen/크립토',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -381,6 +432,23 @@ The generated text will be auto-translated so you can publish in many languages 
     /** Common navigation */
     back: '戻る',
     original: '原文',
+
+    /** Posting step */
+    translationResults: '翻訳結果',
+    combineMode: '結合モード',
+    includeOriginal: '原文を含める',
+    selectLanguagesToCombine: '結合する言語を選択してください',
+    selectLanguagesToView: '表示する言語を選択してください',
+    postAllAtOnce: '一括投稿',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'トーン設定',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: '公式/ビジネス',
+    toneFriendlyDesc: '親しみやすい/エッセイ',
+    toneCryptoNativeDesc: 'Degen/クリプト',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -476,6 +544,23 @@ The generated text will be auto-translated so you can publish in many languages 
     /** Common navigation */
     back: '返回',
     original: '原文',
+
+    /** Posting step */
+    translationResults: '翻译结果',
+    combineMode: '合并模式',
+    includeOriginal: '包含原文',
+    selectLanguagesToCombine: '请选择要合并的语言',
+    selectLanguagesToView: '请选择要查看的语言',
+    postAllAtOnce: '一次性发布',
+
+    /** Tone selection for AI Generate */
+    toneSetting: '语调设置',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: '正式/商务',
+    toneFriendlyDesc: '友好/随笔',
+    toneCryptoNativeDesc: 'Degen/加密',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -574,6 +659,23 @@ El texto generado se traducirá automáticamente para que puedas publicarlo al i
     /** Common navigation */
     back: 'Atrás',
     original: 'Original',
+
+    /** Posting step */
+    translationResults: 'Resultados de Traducción',
+    combineMode: 'Modo Combinar',
+    includeOriginal: 'Incluir Original',
+    selectLanguagesToCombine: 'Por favor selecciona idiomas para combinar',
+    selectLanguagesToView: 'Por favor selecciona idiomas para ver',
+    postAllAtOnce: 'Publicar Todo a la Vez',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'Configuración de Tono',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'Formal y Negocios',
+    toneFriendlyDesc: 'Casual y Cálido',
+    toneCryptoNativeDesc: 'Degen y Hype',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -671,6 +773,23 @@ Le texte généré sera automatiquement traduit afin que vous puissiez le publie
     /** Common navigation */
     back: 'Retour',
     original: 'Texte Original',
+
+    /** Posting step */
+    translationResults: 'Résultats de Traduction',
+    combineMode: 'Mode Combiner',
+    includeOriginal: 'Inclure Original',
+    selectLanguagesToCombine: 'Veuillez sélectionner les langues à combiner',
+    selectLanguagesToView: 'Veuillez sélectionner les langues à afficher',
+    postAllAtOnce: 'Publier Tout en Une Fois',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'Réglage du Ton',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'Formel et Business',
+    toneFriendlyDesc: 'Décontracté et Chaleureux',
+    toneCryptoNativeDesc: 'Degen et Hype',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -768,6 +887,23 @@ Der generierte Text wird automatisch übersetzt, sodass du ihn direkt in vielen 
     /** Common navigation */
     back: 'Zurück',
     original: 'Originaltext',
+
+    /** Posting step */
+    translationResults: 'Übersetzungsergebnisse',
+    combineMode: 'Kombiniermodus',
+    includeOriginal: 'Original einbeziehen',
+    selectLanguagesToCombine: 'Bitte wählen Sie Sprachen zum Kombinieren',
+    selectLanguagesToView: 'Bitte wählen Sie Sprachen zum Anzeigen',
+    postAllAtOnce: 'Alle Auf Einmal Posten',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'Ton-Einstellung',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'Formal & Business',
+    toneFriendlyDesc: 'Locker & Warm',
+    toneCryptoNativeDesc: 'Degen & Hype',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -865,6 +1001,23 @@ O texto gerado será traduzido automaticamente para que você publique em vário
     /** Common navigation */
     back: 'Voltar',
     original: 'Original',
+
+    /** Posting step */
+    translationResults: 'Resultados da Tradução',
+    combineMode: 'Modo Combinar',
+    includeOriginal: 'Incluir Original',
+    selectLanguagesToCombine: 'Por favor selecione idiomas para combinar',
+    selectLanguagesToView: 'Por favor selecione idiomas para ver',
+    postAllAtOnce: 'Publicar Tudo de Uma Vez',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'Configuração de Tom',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'Formal e Negócios',
+    toneFriendlyDesc: 'Casual e Acolhedor',
+    toneCryptoNativeDesc: 'Degen e Hype',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -962,6 +1115,23 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     /** Common navigation */
     back: 'Quay lại',
     original: 'Nguyên bản',
+
+    /** Posting step */
+    translationResults: 'Kết quả dịch',
+    combineMode: 'Chế độ kết hợp',
+    includeOriginal: 'Bao gồm bản gốc',
+    selectLanguagesToCombine: 'Vui lòng chọn ngôn ngữ để kết hợp',
+    selectLanguagesToView: 'Vui lòng chọn ngôn ngữ để xem',
+    postAllAtOnce: 'Đăng Tất Cả Cùng Lúc',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'Cài Đặt Giọng Điệu',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'Chính thức/Kinh doanh',
+    toneFriendlyDesc: 'Thân thiện/Tản văn',
+    toneCryptoNativeDesc: 'Degen/Crypto',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1058,6 +1228,23 @@ Nội dung được tạo sẽ tự động dịch, giúp bạn đăng ngay bằ
     /** Common navigation */
     back: 'ย้อนกลับ',
     original: 'ต้นฉบับ',
+
+    /** Posting step */
+    translationResults: 'ผลการแปล',
+    combineMode: 'โหมดรวม',
+    includeOriginal: 'รวมต้นฉบับ',
+    selectLanguagesToCombine: 'กรุณาเลือกภาษาที่จะรวม',
+    selectLanguagesToView: 'กรุณาเลือกภาษาที่จะดู',
+    postAllAtOnce: 'โพสต์ทั้งหมดพร้อมกัน',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'การตั้งค่าท่วงทำนอง',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'ทางการ/ธุรกิจ',
+    toneFriendlyDesc: 'เป็นกันเอง/เรียงความ',
+    toneCryptoNativeDesc: 'Degen/คริปโต',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1155,6 +1342,23 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     /** Common navigation */
     back: 'Kembali',
     original: 'Teks Asli',
+
+    /** Posting step */
+    translationResults: 'Hasil Terjemahan',
+    combineMode: 'Mode Gabungkan',
+    includeOriginal: 'Sertakan Asli',
+    selectLanguagesToCombine: 'Silakan pilih bahasa untuk digabungkan',
+    selectLanguagesToView: 'Silakan pilih bahasa untuk dilihat',
+    postAllAtOnce: 'Posting Semua Sekaligus',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'Pengaturan Nada',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'Formal & Bisnis',
+    toneFriendlyDesc: 'Santai & Hangat',
+    toneCryptoNativeDesc: 'Degen & Hype',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1252,6 +1456,23 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     /** Common navigation */
     back: 'رجوع',
     original: 'النص الأصلي',
+
+    /** Posting step */
+    translationResults: 'نتائج الترجمة',
+    combineMode: 'وضع الدمج',
+    includeOriginal: 'تضمين الأصل',
+    selectLanguagesToCombine: 'يرجى اختيار اللغات للدمج',
+    selectLanguagesToView: 'يرجى اختيار اللغات للعرض',
+    postAllAtOnce: 'نشر الكل دفعة واحدة',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'إعداد النبرة',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'رسمي/أعمال',
+    toneFriendlyDesc: 'ودود/مقال',
+    toneCryptoNativeDesc: 'Degen/كريبتو',
   },
 
   /* -------------------------------------------------------------------------- */
@@ -1349,6 +1570,23 @@ Teks yang dihasilkan akan otomatis diterjemahkan sehingga Anda bisa mem-posting 
     /** Common navigation */
     back: 'वापस',
     original: 'मूल पाठ',
+
+    /** Posting step */
+    translationResults: 'अनुवाद परिणाम',
+    combineMode: 'संयोजन मोड',
+    includeOriginal: 'मूल शामिल करें',
+    selectLanguagesToCombine: 'कृपया संयोजन के लिए भाषाएं चुनें',
+    selectLanguagesToView: 'कृपया देखने के लिए भाषाएं चुनें',
+    postAllAtOnce: 'सभी को एक साथ पोस्ट करें',
+
+    /** Tone selection for AI Generate */
+    toneSetting: 'टोन सेटिंग',
+    toneProfessional: 'Professional',
+    toneFriendly: 'Friendly',
+    toneCryptoNative: 'Crypto Native',
+    toneProfessionalDesc: 'औपचारिक/व्यापार',
+    toneFriendlyDesc: 'मैत्रीपूर्ण/निबंध',
+    toneCryptoNativeDesc: 'Degen/क्रिप्टो',
   },
 }
 
