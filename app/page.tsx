@@ -103,6 +103,10 @@ export default function Home() {
   // Mini App 추가 진행 상태
   const [isAddingMiniApp, setIsAddingMiniApp] = useState(false)
 
+  const [activeLang, setActiveLang] = useState<Language | null>(null)
+  const [isCombineMode, setIsCombineMode] = useState(false)
+  const [combinedSelection, setCombinedSelection] = useState<Language[]>([])
+
   const t = getTranslation(uiLanguage)
 
   const sectionCardClass =
@@ -693,6 +697,110 @@ export default function Home() {
     }
   }
 
+  const toggleCombinedLang = (lang: Language) => {
+    setCombinedSelection((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
+    )
+  }
+
+  // 선택된 언어들을 한 캐스트 텍스트로 합쳐주는 헬퍼
+  const buildCombinedText = (): string => {
+    const langs = combinedSelection.length > 0 ? combinedSelection : selectedLanguages
+
+    const validLangs = langs.filter(
+      (lang) => translations[lang] && (editableTranslations[lang] || translations[lang]?.text),
+    )
+
+    if (validLangs.length === 0) return ''
+
+    const blocks = validLangs.map((lang) => {
+      const text = editableTranslations[lang] || translations[lang]!.text
+      // 예시처럼 안녕\nhi\nbonjour 형태로, 언어 정보 없이 텍스트만 합치기
+      return text
+    })
+
+    // 언어 사이를 한 줄씩만 띄움
+    return blocks.join('\n')
+  }
+
+  // 여러 언어를 한 캐스트로 합쳐서 보내기
+  const handlePostCombined = async () => {
+    if (!isInMiniApp) {
+      alert('Cast는 Farcaster/Base Mini App 안에서만 보낼 수 있어요.')
+      return
+    }
+
+    const langs = combinedSelection.length > 0 ? combinedSelection : selectedLanguages
+    const finalText = buildCombinedText()
+    if (!finalText.trim()) return
+
+    try {
+      const canCompose = capabilities.includes('actions.composeCast')
+
+      if (canCompose) {
+        await sdk.actions.composeCast({
+          text: finalText,
+          embeds: imageUrl ? [imageUrl] : [],
+        })
+      } else {
+        const url = `https://warpcast.com/~/compose?text=${encodeURIComponent(finalText)}`
+        await sdk.actions.openUrl({ url })
+      }
+
+      // 로그 기록 (첫번째 언어 기준)
+      const targetLangForLog = langs[0] ?? originalLang ?? 'en'
+
+      try {
+        if (fid) {
+          await fetch('/api/log-cast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fid,
+              sessionId,
+              translationId: null,
+              targetLang: targetLangForLog,
+              castHash: null,
+              castUrl: null,
+              client: 'polycast-mini-app',
+              status: 'success',
+              mode: 'combined',
+            }),
+          })
+        }
+      } catch (e) {
+        console.error('Failed to log combined cast:', e)
+      }
+    } catch (error) {
+      console.error('Post combined error:', error)
+      alert('Failed to open composer. Please try again.')
+
+      try {
+        const targetLangForLog = langs[0] ?? originalLang ?? 'en'
+        if (fid) {
+          await fetch('/api/log-cast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fid,
+              sessionId,
+              translationId: null,
+              targetLang: targetLangForLog,
+              castHash: null,
+              castUrl: null,
+              client: 'polycast-mini-app',
+              status: 'failed',
+              mode: 'combined',
+              errorMessage: (error as Error).message ?? 'composeCast/openUrl failed',
+            }),
+          })
+        }
+      } catch (e) {
+        console.error('Failed to log combined cast (failed):', e)
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -1116,26 +1224,72 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Translation Results */}
+            {/* Translation Results - Tab + Combine Mode */}
             {Object.keys(translations).length > 0 && (
-              <div className="space-y-4 mb-6">
-                {selectedLanguages.map((lang) => {
-                  const translation = displayTranslations[lang]
-                  if (!translation) return null
+              <div className={sectionCardClass}>
+                {/* 상단: 라벨 + 합치기 모드 토글 */}
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-xs sm:text-sm text-gray-500">번역 언어 선택</span>
+                  <button
+                    type="button"
+                    onClick={() => setIsCombineMode((prev) => !prev)}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs sm:text-sm border transition-colors
+              ${
+                isCombineMode
+                  ? 'bg-[#f5f3ff] border-[#9333ea] text-[#4c1d95]'
+                  : 'bg-gray-100 border-gray-200 text-gray-600'
+              }`}
+                  >
+                    {isCombineMode ? '합치기 모드 ON' : '합치기 모드 OFF'}
+                  </button>
+                </div>
 
-                  const editableText = editableTranslations[lang] || translation.text
+                {/* 언어 탭 */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {selectedLanguages.map((lang) => {
+                    const isActive = activeLang === lang
+                    const isCombined = combinedSelection.includes(lang)
 
-                  return (
-                    <div key={lang} className={sectionCardClass}>
+                    return (
+                      <button
+                        key={lang}
+                        type="button"
+                        onClick={() => {
+                          if (isCombineMode) {
+                            toggleCombinedLang(lang)
+                          }
+                          setActiveLang(lang)
+                        }}
+                        className={`px-4 py-2 rounded-2xl border-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-all
+                  ${
+                    isActive
+                      ? 'border-[#9333ea] bg-[#f5f3ff] text-[#4c1d95]'
+                      : 'border-transparent bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }
+                  ${isCombineMode && isCombined ? 'ring-2 ring-[#a855f7]/60' : ''}
+                `}
+                      >
+                        <span className="mr-1">{LANGUAGES[lang].flag}</span>
+                        {getLanguageName(uiLanguage, lang)}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* 아래 큰 카드: 선택된 언어 하나만 표시 */}
+                {activeLang &&
+                  selectedLanguages.includes(activeLang) &&
+                  translations[activeLang] && (
+                    <>
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
-                          <span className="text-xl sm:text-2xl">{LANGUAGES[lang].flag}</span>
+                          <span className="text-xl sm:text-2xl">{LANGUAGES[activeLang].flag}</span>
                           <span className="truncate">
-                            {getLanguageName(uiLanguage, lang as Language)}
+                            {getLanguageName(uiLanguage, activeLang as Language)}
                           </span>
                         </h3>
                         <button
-                          onClick={() => handleDeleteCard(lang)}
+                          onClick={() => handleDeleteCard(activeLang)}
                           className="text-gray-400 hover:text-red-500 transition-colors shrink-0 ml-2"
                         >
                           <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -1157,11 +1311,14 @@ export default function Home() {
                           </div>
 
                           <textarea
-                            value={editableText}
+                            value={
+                              editableTranslations[activeLang] || translations[activeLang].text
+                            }
                             onChange={(e) => {
+                              const value = e.target.value
                               setEditableTranslations((prev) => ({
                                 ...prev,
-                                [lang]: e.target.value,
+                                [activeLang]: value,
                               }))
                             }}
                             className="w-full p-0 border-0 resize-none text-base sm:text-base text-gray-900 bg-transparent focus:outline-none"
@@ -1200,17 +1357,45 @@ export default function Home() {
                         </div>
                       </div>
 
-                      <div className="flex gap-2">
+                      {/* 합치기 모드 미리보기 */}
+                      {isCombineMode && (
+                        <div className="mt-4">
+                          <h4 className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
+                            선택된 언어 합쳐진 미리보기
+                          </h4>
+                          <div className="border border-dashed border-[#c4b5fd] rounded-xl bg-[#f5f3ff]/40 p-3">
+                            <textarea
+                              readOnly
+                              className="w-full border-0 bg-transparent resize-none text-sm sm:text-base text-gray-900 focus:outline-none"
+                              rows={6}
+                              value={buildCombinedText()}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 하단 버튼: 단일 언어 / 합치기 모드 */}
+                      <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                        {/* 현재 언어만 캐스트 */}
                         <button
-                          onClick={() => handlePost(lang)}
-                          className="flex-1 mt-4 py-2 px-3 sm:px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
+                          onClick={() => handlePost(activeLang)}
+                          className="flex-1 py-2 px-3 sm:px-4 bg-[#9333ea] text-white rounded-lg font-medium hover:bg-[#a855f7] transition-colors text-sm sm:text-base"
                         >
-                          {t.postNow}
+                          {t.postNow} (이 언어만)
                         </button>
+
+                        {/* 합치기 모드일 때: 선택된 언어 모두 한 캐스트로 */}
+                        {isCombineMode && (
+                          <button
+                            onClick={handlePostCombined}
+                            className="flex-1 py-2 px-3 sm:px-4 bg-white text-[#4c1d95] border border-[#c4b5fd] rounded-lg font-medium hover:bg-[#f5f3ff] transition-colors text-xs sm:text-sm"
+                          >
+                            선택 언어 모두 한 캐스트로
+                          </button>
+                        )}
                       </div>
-                    </div>
-                  )
-                })}
+                    </>
+                  )}
               </div>
             )}
           </div>
