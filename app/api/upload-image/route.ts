@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 
-export const runtime = 'nodejs' // Blob + Buffer 사용
+export const runtime = 'nodejs' // Blob + Buffer 쓸 거라 edge 말고 nodejs로 고정
 
 const MAX_SIZE = 10 * 1024 * 1024 // 10MB
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg']
@@ -26,31 +26,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Only PNG and JPG images are allowed' }, { status: 400 })
     }
 
-    // 4) Blob 토큰 체크
+    // 4) Blob 토큰 체크 (없으면 무조건 500 나니까 미리 방어)
     const token = process.env.BLOB_READ_WRITE_TOKEN
     if (!token) {
       console.error('BLOB_READ_WRITE_TOKEN is missing in environment variables')
       return NextResponse.json({ error: 'Blob token not configured on server' }, { status: 500 })
     }
 
-    // 5) 파일 이름 sanitize
-    const cleanedName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_') || 'image.jpg'
-    const blobKey = `${Date.now()}-${cleanedName}`
+    // 5) 파일 이름 sanitize (공백/이상한 문자 최소화)
+    const cleanedName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')
+    const fileName = `${Date.now()}-${cleanedName || 'image'}`
 
-    // 6) Vercel Blob 업로드 (public)
-    const blob = await put(blobKey, file, {
+    // 6) Vercel Blob 업로드
+    const blob = await put(fileName, file, {
       access: 'public',
       token,
     })
 
-    // 7) 원본 Blob URL을 base64url로 인코딩해서 /api/image/[id] 프록시 URL 만들기
-    const encoded = Buffer.from(blob.url).toString('base64url')
-    const proxyUrl = `/api/image/${encoded}`
-
     return NextResponse.json({
-      url: proxyUrl, // 프론트에서 이걸 imageUrl + embeds 로 사용
-      blobUrl: blob.url, // 필요하면 디버깅용
-      fileName: cleanedName,
+      url: blob.url,
+      fileName,
       fileSize: file.size,
     })
   } catch (error) {
