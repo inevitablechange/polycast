@@ -4,11 +4,20 @@ const FLOCK_API_URL = 'https://api.flock.io/v1/chat/completions'
 
 export async function POST(request: NextRequest) {
   try {
-    const { topic, style } = await request.json()
+    const { topic, tone } = await request.json()
 
-    if (!topic || !style) {
-      return NextResponse.json({ error: 'Topic and style are required' }, { status: 400 })
+    if (!topic || !tone) {
+      return NextResponse.json({ error: 'Topic and tone are required' }, { status: 400 })
     }
+
+    // Tone별 프롬프트 지시문
+    const tonePrompts: Record<string, string> = {
+      professional: `Translate this into the language of the topic using a professional, formal, and authoritative tone. Use polite endings. Suitable for official business announcements or press releases. Avoid slang.`,
+      friendly: `Translate this into the language of the topic using a friendly, casual, and engaging tone. Write as if talking to a close friend. Use soft endings and appropriate emojis to make it feel warm.`,
+      cryptoNative: `Translate this into the language of the topic using 'Crypto Native' or 'Degen' slang. Use terms like LFG, WAGMI, Based where appropriate. Keep it hype, short, and impactful. Use strict informal speech.`,
+    }
+
+    const tonePrompt = tonePrompts[tone] || tonePrompts.friendly
 
     const response = await fetch(FLOCK_API_URL, {
       method: 'POST',
@@ -21,18 +30,37 @@ export async function POST(request: NextRequest) {
         messages: [
           {
             role: 'system',
-            content: `You are a professional social media content creator for Farcaster.
+            content: `You are an expert content creator and translator for Farcaster, a decentralized social network.
 
-Generate a single, well-structured cast as plain text only.
+Your task is to generate or translate content based on the user's input.
 
-Hard rules:
-- Do NOT include any labels or headings like "CAST", "CAST (Farcaster):" or similar.
-- Do NOT use markdown formatting (no **bold**, lists, or numbered sections).
-- Do NOT use emojis.
-- Output only the cast body text, nothing else.
-- If not mentioned, write in the language of the topic
+[GLOBAL RULES - APPLY TO ALL OUTPUTS]
 
-The first 320 characters will appear in the feed preview, so make the opening sentence strong and self-contained.
+1. **Platform Fit**: The output must feel native to Farcaster. Avoid generic corporate marketing speak (e.g., "In the rapidly evolving landscape...").
+
+2. **No Fluff**: Be concise. Get straight to the point. Farcaster users value high signal-to-noise ratio.
+
+3. **Terminology**:
+   - Keep technical terms (e.g., Ethereum, L2, ZK-Rollup, DeFi, NFT, Base) in **English** if there is no widely accepted localized term, even if the target language is different.
+   - Do NOT translate project names (e.g., "Optimism" remains "Optimism", not "낙관주의").
+   - Do NOT translate token tickers (e.g., $DEGEN, $ETH).
+
+4. **Formatting**:
+   - Do not wrap the output in quotation marks (" ").
+   - Do not add conversational fillers like "Here is the translation:" or "Sure!". Output ONLY the final content.
+   - Preserve all URLs and @mentions exactly as they are.
+   - Do NOT include any labels or headings like "CAST", "CAST (Farcaster):" or similar.
+   - Do NOT use markdown formatting (no **bold**, lists, or numbered sections).
+   - Do NOT use emojis.
+   - Output only the cast body text, nothing else.
+
+5. **Hashtags**:
+   - Use hashtags sparingly. Farcaster uses channels (e.g., /base) more than hashtags.
+   - Avoid generic hashtags like #crypto #blockchain #web3 unless requested.
+
+6. **Length**: Keep the entire cast within 320 characters. The first 320 characters will appear in the feed preview, so make the opening sentence strong and self-contained.
+
+Tone instruction: ${tonePrompt}
 
 Topic: ${topic}`,
           },

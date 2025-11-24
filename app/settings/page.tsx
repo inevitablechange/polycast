@@ -31,13 +31,13 @@ export default function SettingsPage() {
           {/* About */}
           <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
-              <FileText className="w-5 h-5 text-purple-600" />
+              <FileText className="w-5 h-5 text-[#a78bfa]" />
               <h2 className="text-lg font-semibold">{t.aboutTitle}</h2>
             </div>
             <p className="text-gray-600 mb-4">{t.aboutDescription}</p>
             <button
               onClick={() => handleOpenUrl('https://docs.polycast.com')}
-              className="text-purple-600 hover:text-purple-700 flex items-center gap-2 text-sm"
+              className="text-[#a78bfa] hover:text-[#9333ea] flex items-center gap-2 text-sm"
             >
               {t.viewDocs}
               <ExternalLink className="w-4 h-4" />
@@ -47,13 +47,13 @@ export default function SettingsPage() {
           {/* Feedback */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
-              <MessageSquare className="w-5 h-5 text-purple-600" />
+              <MessageSquare className="w-5 h-5 text-[#a78bfa]" />
               <h2 className="text-lg font-semibold">{t.feedbackTitle}</h2>
             </div>
             <p className="text-gray-600 mb-4">{t.feedbackDescription}</p>
             <button
               onClick={() => handleOpenUrl('https://forms.gle/feedback')}
-              className="text-purple-600 hover:text-purple-700 flex items-center gap-2 text-sm"
+              className="text-[#a78bfa] hover:text-[#9333ea] flex items-center gap-2 text-sm"
             >
               {t.submitFeedback}
               <ExternalLink className="w-4 h-4" />

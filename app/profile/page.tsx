@@ -226,7 +226,7 @@ export default function ProfilePage() {
             </div>
             <button
               onClick={handleShareStats}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-purple-600 text-white hover:bg-purple-500 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-[#c4b5fd] text-black hover:bg-[#a78bfa] transition-colors"
             >
               📤 <span>Share my stats</span>
             </button>
