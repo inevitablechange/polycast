@@ -91,10 +91,11 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState(false)
 
   const [miniAppUser, setMiniAppUser] = useState<MiniAppUser | null>(null)
+  const [isInMiniApp, setIsInMiniApp] = useState(false)
   const [userName, setUserName] = useState('')
   const [displayName, setDisplayName] = useState('')
-  const [isInMiniApp, setIsInMiniApp] = useState(false)
   const [fid, setFid] = useState<number | null>(null)
+  const [pfpUrl, setPfpUrl] = useState('')
   const [sessionId, setSessionId] = useState<number | null>(null)
   const [originalLang, setOriginalLang] = useState<Language | null>(null)
 
@@ -180,6 +181,7 @@ export default function Home() {
         setUserName(user.username || '')
         setDisplayName(user.displayName || '')
         setFid(user.fid)
+        setPfpUrl(user.pfpUrl || '')
 
         // Initialize user on backend
         try {
@@ -1268,7 +1270,11 @@ export default function Home() {
               <div className="border border-gray-200 rounded-xl overflow-hidden">
                 <div className="p-4 sm:p-5">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                    {pfpUrl ? (
+                      <img src={pfpUrl} alt="Profile" className="w-16 h-16 rounded-full" />
+                    ) : (
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                    )}
                     <div className="min-w-0">
                       <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                         {userName || 'Anonymous'}
@@ -1394,7 +1400,15 @@ export default function Home() {
                         <div className="border border-gray-200 rounded-xl overflow-hidden">
                           <div className="p-4 sm:p-5">
                             <div className="flex items-center gap-3 mb-3">
-                              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                              {pfpUrl ? (
+                                <img
+                                  src={pfpUrl}
+                                  alt="Profile"
+                                  className="w-16 h-16 rounded-full"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                              )}
                               <div className="min-w-0">
                                 <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                                   {userName || 'Anonymous'}
@@ -1561,7 +1575,11 @@ export default function Home() {
             <div className="border border-gray-200 rounded-xl overflow-hidden">
               <div className="p-4 sm:p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                  {pfpUrl ? (
+                    <img src={pfpUrl} alt="Profile" className="w-16 h-16 rounded-full" />
+                  ) : (
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                  )}
                   <div className="min-w-0">
                     <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                       {userName || 'Anonymous'}
