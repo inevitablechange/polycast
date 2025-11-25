@@ -1271,7 +1271,11 @@ export default function Home() {
                 <div className="p-4 sm:p-5">
                   <div className="flex items-center gap-3 mb-3">
                     {pfpUrl ? (
-                      <img src={pfpUrl} alt="Profile" className="w-16 h-16 rounded-full" />
+                      <img
+                        src={pfpUrl}
+                        alt="Profile"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full"
+                      />
                     ) : (
                       <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
                     )}
@@ -1404,7 +1408,7 @@ export default function Home() {
                                 <img
                                   src={pfpUrl}
                                   alt="Profile"
-                                  className="w-16 h-16 rounded-full"
+                                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full"
                                 />
                               ) : (
                                 <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
@@ -1493,7 +1497,15 @@ export default function Home() {
                             <div className="border border-gray-200 rounded-xl overflow-hidden">
                               <div className="p-4 sm:p-5">
                                 <div className="flex items-center gap-3 mb-3">
-                                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                                  {pfpUrl ? (
+                                    <img
+                                      src={pfpUrl}
+                                      alt="Profile"
+                                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full"
+                                    />
+                                  ) : (
+                                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
+                                  )}
                                   <div className="min-w-0">
                                     <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                                       {userName || 'Anonymous'}
