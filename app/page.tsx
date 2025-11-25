@@ -1588,7 +1588,11 @@ export default function Home() {
               <div className="p-4 sm:p-5">
                 <div className="flex items-center gap-3 mb-3">
                   {pfpUrl ? (
-                    <img src={pfpUrl} alt="Profile" className="w-16 h-16 rounded-full" />
+                    <img
+                      src={pfpUrl}
+                      alt="Profile"
+                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full"
+                    />
                   ) : (
                     <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200" />
                   )}
