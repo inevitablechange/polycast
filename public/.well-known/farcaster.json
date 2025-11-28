@@ -21,8 +21,7 @@
     "tagline": "One Cast, Many Languages",
     "ogTitle": "PolyCast",
     "ogDescription": "Global Farcaster casting mini app.",
-    "ogImageUrl": "https://polycast-five.vercel.app/Polycast_logo_name_1200x630.png",
-    "noindex": true
+    "ogImageUrl": "https://polycast-five.vercel.app/Polycast_logo_name_1200x630.png"
   },
   "baseBuilder": {
     "ownerAddress": "0x88bFe3C3A99072c497B6058F660E24E3bC2922be"
